@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/contacts_item_container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="80sp"
+    android:padding="10sp">
+
+    <FrameLayout
+        android:id="@+id/contacts_item_profile_image_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:background="@drawable/user_avatar_grey_layout">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/contacts_item_profile_image"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:src="@drawable/ic_launcher_background"/>
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/contacts_item_username"
+        android:layout_toStartOf="@id/contacts_item_call_contact"
+        android:layout_toEndOf="@id/contacts_item_profile_image_container"
+        android:layout_marginStart="10sp"
+        style="@style/Theme.JustChat.TextView.ProfileUsername"
+        android:textSize="16sp"
+        android:textColor="@color/grey"
+        android:textStyle="bold"
+        android:text="@string/username" />
+
+    <TextView
+        android:id="@+id/contacts_item_online_state"
+        android:layout_toEndOf="@id/contacts_item_profile_image_container"
+        android:layout_marginStart="10sp"
+        android:layout_below="@id/contacts_item_username"
+        style="@style/Theme.JustChat.TextView.Message"
+        android:text="@string/online" />
+
+    <ImageView
+        android:id="@+id/contacts_item_call_contact"
+        android:layout_toStartOf="@id/contacts_item_delete_contact"
+        style="@style/Theme.JustChat.ImageView.ListItem"
+        android:src="@drawable/ic_phone_call"
+        app:tint="@color/contactCall" />
+
+    <ImageView
+        android:id="@+id/contacts_item_delete_contact"
+        android:layout_alignParentEnd="true"
+        style="@style/Theme.JustChat.ImageView.ListItem"
+        android:src="@drawable/ic_trash"
+        app:tint="@color/contactDelete" />
+
+</RelativeLayout>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.ContactsFragment">
+
+    <TextView
+        android:id="@+id/page_title"
+        android:text="@string/contacts"
+        android:layout_alignEnd="@id/add_contact_btn"
+        style="@style/Theme.JustChat.TextView.PageTitle" />
+
+    <ImageView
+        android:id="@+id/add_contact_btn"
+        android:layout_width="40sp"
+        android:layout_height="40sp"
+        android:layout_marginTop="30sp"
+        android:layout_marginEnd="10sp"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/ic_add"
+        app:tint="@color/grey"
+        />
+
+    <EditText
+        android:id="@+id/contacts_search_bar"
+        android:layout_below="@id/page_title"
+        style="@style/Theme.JustChat.EditText.SearchBar" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/contacts_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/contacts_search_bar"
+        android:layout_marginTop="10sp"
+        tools:listitem="@layout/contacts_list_item"
+        />
+
+</RelativeLayout>

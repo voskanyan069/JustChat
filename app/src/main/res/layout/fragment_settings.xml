@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.SettingsFragment">
+
+    <TextView
+        android:id="@+id/page_title"
+        android:text="@string/settings"
+        style="@style/Theme.JustChat.TextView.PageTitle" />
+
+    <FrameLayout
+        android:id="@+id/settings_avatar_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/page_title"
+        android:layout_marginTop="10sp"
+        android:layout_marginStart="20sp"
+        android:padding="5dp"
+        android:background="@drawable/user_avatar_green_layout">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/settings_avatar"
+            android:layout_width="100sp"
+            android:layout_height="100sp"
+            android:src="@drawable/ic_launcher_background"/>
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/settings_login"
+        android:layout_below="@id/page_title"
+        android:layout_marginTop="20sp"
+        android:layout_toEndOf="@id/settings_avatar_container"
+        android:text="@string/login"
+        style="@style/Theme.JustChat.TextView.SubTitle"
+        />
+
+    <TextView
+        android:id="@+id/settings_username"
+        android:layout_below="@id/settings_login"
+        android:layout_toEndOf="@id/settings_avatar_container"
+        android:text="@string/username"
+        style="@style/Theme.JustChat.TextView.SubTitle"
+        />
+
+    <TextView
+        android:id="@+id/notifications_title"
+        android:text="@string/notifications"
+        android:layout_below="@id/settings_avatar_container"
+        style="@style/Theme.JustChat.TextView.PageTitle" />
+
+    <TextView
+        android:id="@+id/notification_enabled_text"
+        android:layout_width="wrap_content"
+        android:layout_below="@id/notifications_title"
+        android:layout_marginTop="10sp"
+        android:text="@string/enabled"
+        style="@style/Theme.JustChat.TextView.SubTitle" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/notification_enabled"
+        android:layout_below="@id/notifications_title"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="10sp"
+        android:checked="true"
+        style="@style/Theme.JustChat.Switch"
+        />
+
+</RelativeLayout>
