@@ -101,7 +101,11 @@ class SignUpActivity : AppCompatActivity() {
                                                 val isCreated = userJson.get("created").asBoolean
                                                 if (isCreated) {
                                                     editorPreference.putBoolean("is_authenticated", true)
+                                                    editorPreference.putString("login", loginInput.text.toString())
+                                                    editorPreference.putString("username", usernameInput.text.toString())
                                                     editorPreference.commit()
+                                                    CurrentUser.login = loginInput.text.toString()
+                                                    CurrentUser.username = usernameInput.text.toString()
                                                     val intent = Intent(this@SignUpActivity, MainActivity::class.java)
                                                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                                                     startActivity(intent)

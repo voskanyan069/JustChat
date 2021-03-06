@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import am.justchat.R
 import am.justchat.adapters.ChatsAdapter
 import am.justchat.adapters.StoryAdapter
+import am.justchat.api.repos.ContactsRepo
 import am.justchat.models.Chats
 import am.justchat.models.Story
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,11 +17,13 @@ import androidx.recyclerview.widget.RecyclerView
 class ChatsFragment : Fragment() {
     private lateinit var storiesList: RecyclerView
     private lateinit var chatsList: RecyclerView
+    private lateinit var contactsRepo: ContactsRepo
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_chats, container, false)
 
+        contactsRepo = ContactsRepo.getInstance()!!
         val stories = listOf(
             Story("USERNAME_1", "https://images.unsplash.com/photo-1614631446449-e2c7a0cc1428?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"),
             Story("USERNAME_2", "https://images.unsplash.com/photo-1614676367446-17828873a71c?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=675&q=80"),
@@ -47,6 +50,14 @@ class ChatsFragment : Fragment() {
         fillChatsList(chats)
 
         return root
+    }
+
+    private fun getStoriesList() {
+
+    }
+
+    private fun getChatsList() {
+
     }
 
     private fun fillStoriesList(data: List<Story>) {

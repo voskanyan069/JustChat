@@ -7,13 +7,24 @@ import android.view.View
 import android.view.ViewGroup
 import am.justchat.R
 import am.justchat.adapters.ContactsAdapter
+import am.justchat.api.repos.ContactsRepo
+import am.justchat.authentication.CurrentUser
 import am.justchat.models.Contacts
 import am.justchat.states.OnlineState
 import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.*
+import org.json.JSONArray
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class ContactsFragment : Fragment() {
+    private lateinit var contactsRepo: ContactsRepo
+    private lateinit var addContactButton: ImageView
+    private val contactsArrayList = arrayListOf<Contacts>()
+
     companion object {
         private lateinit var contactsList: RecyclerView
 
@@ -21,7 +32,6 @@ class ContactsFragment : Fragment() {
             contactsList.adapter?.notifyItemRemoved(index)
         }
     }
-    private lateinit var addContactButton: ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,19 +39,47 @@ class ContactsFragment : Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_contacts, container, false)
 
-        val contacts = arrayListOf(
-                Contacts("Username_1", OnlineState.ONLINE, "https://images.unsplash.com/photo-1614676367446-17828873a71c?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=675&q=80"),
-                Contacts("Username_2", OnlineState.OFFLINE, "https://images.unsplash.com/photo-1614705755374-538591a6f8f4?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80"),
-                Contacts("Username_3", OnlineState.ONLINE, "https://images.unsplash.com/photo-1614676314170-3eb1d98d0a25?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"),
-                Contacts("Username_4", OnlineState.OFFLINE, "https://images.unsplash.com/photo-1614631446449-e2c7a0cc1428?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80")
-        )
+        contactsRepo = ContactsRepo.getInstance()!!
+        getContactsList()
 
         addContactButton = root.findViewById(R.id.add_contact_btn)
         contactsList = root.findViewById(R.id.contacts_list)
         contactsList.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.VERTICAL, false)
-        fillContactsList(contacts)
 
         return root
+    }
+
+    private fun getContactsList() {
+        contactsRepo.contactsService!!
+                .getUserContacts(CurrentUser.login!!)
+                .enqueue(object : Callback<JsonObject> {
+                    override fun onResponse(
+                            call: Call<JsonObject>,
+                            response: Response<JsonObject>
+                    ) {
+                        val jsonParser = JsonParser()
+                        val contactsJsonStr = Gson().toJson(response.body())
+                        val contactsJson: JsonObject = jsonParser
+                                .parse(contactsJsonStr).asJsonObject
+                        val contacts: JsonArray = contactsJson.getAsJsonArray("contacts")
+
+                        for (i in 0..contacts.size().minus(1)) {
+                            val contactJson: JsonObject = contacts.get(i).asJsonObject
+                            val cont = Contacts(
+                                    profileUsername = contactJson.get("username").asString,
+                                    profileOnlineState = when (contactJson.get("status").asString) {
+                                        "online" -> OnlineState.ONLINE
+                                        else -> OnlineState.OFFLINE
+                                    },
+                                    profileImage = contactJson.get("profile_image").asString)
+                            contactsArrayList.add(cont)
+                        }
+
+                        fillContactsList(contactsArrayList)
+                    }
+
+                    override fun onFailure(call: Call<JsonObject>, t: Throwable) {}
+                })
     }
 
     private fun fillContactsList(data: ArrayList<Contacts>) {

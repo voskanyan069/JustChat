@@ -1,6 +1,7 @@
 package am.justchat.activities
 
 import am.justchat.R
+import am.justchat.authentication.CurrentUser
 import am.justchat.authentication.SignUpActivity
 import am.justchat.storage.SharedPreference
 import am.justchat.ui.main.CallsFragment
@@ -43,6 +44,13 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, SignUpActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
+        } else {
+            val login = sharedPreference.getString("login", null)
+            val username = sharedPreference.getString("username", null)
+            println("Login: $login")
+            println("Username: $username")
+            CurrentUser.login = login
+            CurrentUser.username = username
         }
     }
 
