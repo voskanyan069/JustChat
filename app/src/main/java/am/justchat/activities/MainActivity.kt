@@ -58,18 +58,10 @@ class MainActivity : AppCompatActivity() {
             BottomNavigationView.OnNavigationItemSelectedListener { item ->
                 var selectedFragment: Fragment? = null
                 when (item.itemId) {
-                    R.id.tab_chats -> {
-                        selectedFragment = ChatsFragment()
-                    }
-                    R.id.tab_calls -> {
-                        selectedFragment = CallsFragment()
-                    }
-                    R.id.tab_contacts -> {
-                        selectedFragment = ContactsFragment()
-                    }
-                    R.id.tab_settings -> {
-                        selectedFragment = SettingsFragment()
-                    }
+                    R.id.tab_chats -> selectedFragment = ChatsFragment()
+                    R.id.tab_calls -> selectedFragment = CallsFragment()
+                    R.id.tab_contacts -> selectedFragment = ContactsFragment()
+                    R.id.tab_settings -> selectedFragment = SettingsFragment()
                 }
                 switchFragment(selectedFragment!!)
                 true
