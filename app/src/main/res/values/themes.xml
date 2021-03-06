@@ -103,6 +103,8 @@
         <item name="android:layout_width">400sp</item>
         <item name="android:layout_height">300sp</item>
         <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
     </style>
 
     <style name="Theme.JustChat.EditText.Authentication" parent="ThemeOverlay.MaterialComponents">
