@@ -85,8 +85,8 @@ class SignUpActivity : AppCompatActivity() {
                                 ) {
                                     val jsonParser = JsonParser()
                                     val userJsonStr = Gson().toJson(response.body())
-                                    val userJson: JsonObject =
-                                            jsonParser.parse(userJsonStr).asJsonObject
+                                    val userJson: JsonObject = jsonParser
+                                            .parse(userJsonStr).asJsonObject
                                     try {
                                         val code: Int = userJson.get("code").asInt
                                         if (code == 2) {
