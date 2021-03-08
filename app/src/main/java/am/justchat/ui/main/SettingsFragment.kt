@@ -6,9 +6,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import am.justchat.R
+import am.justchat.api.repos.UsersRepo
+import am.justchat.authentication.CurrentUser
+import am.justchat.authentication.SignUpActivity
+import android.annotation.SuppressLint
+import android.content.Intent
+import android.widget.TextView
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.google.gson.Gson
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
+import com.squareup.picasso.Picasso
+import de.hdodenhof.circleimageview.CircleImageView
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.lang.Exception
 
 class SettingsFragment : Fragment() {
+    private lateinit var profileImage: CircleImageView
+    private lateinit var profileLogin: TextView
+    private lateinit var profileUsername: TextView
     private lateinit var notificationSwitcher: SwitchMaterial
 
     override fun onCreateView(
@@ -17,11 +35,51 @@ class SettingsFragment : Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_settings, container, false)
 
+        profileImage = root.findViewById(R.id.settings_avatar)
+        profileLogin = root.findViewById(R.id.settings_login)
+        profileUsername = root.findViewById(R.id.settings_username)
         notificationSwitcher = root.findViewById(R.id.notification_enabled)
+        getUser()
         switchNotificationsState()
 
         return root
     }
 
+    private fun getUser() {
+        val usersRepo = UsersRepo.getInstance()
+        usersRepo.usersService
+            ?.getUser(CurrentUser.login.toString())
+            ?.enqueue(object : Callback<JsonObject> {
+                @SuppressLint("SetTextI18n")
+                override fun onResponse(
+                    call: Call<JsonObject>,
+                    response: Response<JsonObject>
+                ) {
+                    val jsonParser = JsonParser()
+                    val userJsonStr = Gson().toJson(response.body())
+                    val userJson = jsonParser.parse(userJsonStr).asJsonObject
+                    try {
+                        val code: Int = userJson.get("code").asInt
+                        if (code == 1) {
+                            moveToSignUp()
+                        }
+                    } catch (e: Exception) {
+                        val user = userJson.get("user").asJsonObject
+                        Picasso.get().load(user.get("profile_image").asString).into(profileImage)
+                        profileLogin.text = "Login: ${user.get("login").asString}"
+                        profileUsername.text = "Username: ${user.get("username").asString}"
+                    }
+                }
+
+                override fun onFailure(call: Call<JsonObject>, t: Throwable) {}
+            })
+    }
+
     private fun switchNotificationsState() = notificationSwitcher.setOnCheckedChangeListener { _, _ -> }
+
+    private fun moveToSignUp() {
+        val intent = Intent(context, SignUpActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+    }
 }
