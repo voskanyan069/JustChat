@@ -70,13 +70,24 @@ class ChatsFragment : Fragment() {
                             moveToSignUp()
                         }
                     } catch (e: Exception) {
-                        val stories: JsonArray = storiesJson.getAsJsonArray("stories")
-                        for (i in 0..stories.size().minus(1)) {
-                            val storyJson: JsonObject = stories.get(i).asJsonObject
+                        val storyJson: JsonObject = storiesJson.getAsJsonObject("stories")
+                        val storyMediaPathJson: JsonArray = storyJson.getAsJsonArray("media_path")
+                        val storyMediaPath = arrayListOf<String>()
+                        if (storyMediaPathJson.size() == 0) {
                             val story = Story(
-                                profileUsername = storyJson.get("login").asString,
-                                profileImage = storyJson.get("profile_image").asString,
-                                mediaPath = storyJson.get("path").asString
+                                    profileUsername = storyJson.get("login").asString,
+                                    profileImage = storyJson.get("profile_image").asString,
+                                    mediaPath = arrayListOf()
+                            )
+                            storiesArrayList.add(story)
+                        } else {
+                            for (k in 0..storyMediaPathJson.size().minus(1)) {
+                                storyMediaPath.add(storyMediaPathJson.get(k).asString)
+                            }
+                            val story = Story(
+                                    profileUsername = storyJson.get("login").asString,
+                                    profileImage = storyJson.get("profile_image").asString,
+                                    mediaPath = storyMediaPath
                             )
                             storiesArrayList.add(story)
                         }
@@ -106,34 +117,37 @@ class ChatsFragment : Fragment() {
                         for (i in 0..contacts.size().minus(1)) {
                             val contactJson: JsonObject = contacts.get(i).asJsonObject
                             storiesRepo.storiesService
-                                ?.getUserStories(contactJson.get("login").asString)
-                                ?.enqueue(object : Callback<JsonObject> {
-                                    override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                                        val storiesJsonStr = Gson().toJson(response.body())
-                                        val storiesJson: JsonObject = jsonParser.parse(storiesJsonStr).asJsonObject
-                                        try {
-                                            val code: Int = storiesJson.get("code").asInt
-                                            if (code == 1) {
-                                                moveToSignUp()
-                                            }
-                                        } catch (e: Exception) {
-                                            val stories: JsonArray = storiesJson.getAsJsonArray("stories")
-                                            for (j in 0..stories.size().minus(1)) {
-                                                val storyJson: JsonObject = stories.get(j).asJsonObject
+                                    ?.getUserStories(contactJson.get("login").asString)
+                                    ?.enqueue(object : Callback<JsonObject> {
+                                        override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                                            val storiesJsonStr = Gson().toJson(response.body())
+                                            val storiesJson: JsonObject = jsonParser.parse(storiesJsonStr).asJsonObject
+                                            try {
+                                                val code: Int = storiesJson.get("code").asInt
+                                                if (code == 1) {
+                                                    moveToSignUp()
+                                                }
+                                            } catch (e: Exception) {
+                                                val storyJson: JsonObject = storiesJson.getAsJsonObject("stories")
+                                                val storyMediaPathJson: JsonArray = storyJson.getAsJsonArray("media_path")
+                                                val storyMediaPath = arrayListOf<String>()
+                                                for (k in 0..storyMediaPathJson.size().minus(1)) {
+                                                    storyMediaPath.add(storyMediaPathJson.get(k).asString)
+                                                }
                                                 val story = Story(
-                                                    profileUsername = storyJson.get("login").asString,
-                                                    profileImage = storyJson.get("profile_image").asString,
-                                                    mediaPath = storyJson.get("path").asString
+                                                        profileUsername = storyJson.get("login").asString,
+                                                        profileImage = storyJson.get("profile_image").asString,
+                                                        mediaPath = storyMediaPath
                                                 )
+                                                println("${story.profileUsername} CONTACT MEDIA PATH - $storyMediaPath")
                                                 storiesArrayList.add(story)
                                             }
-                                            fillStoriesList(storiesArrayList)
                                         }
-                                    }
 
-                                    override fun onFailure(call: Call<JsonObject>, t: Throwable) {}
-                                })
+                                        override fun onFailure(call: Call<JsonObject>, t: Throwable) {}
+                                    })
                         }
+                        fillStoriesList(storiesArrayList)
                     }
                 }
 

@@ -9,10 +9,12 @@ import am.justchat.R
 import am.justchat.adapters.CallsAdapter
 import am.justchat.api.repos.CallsRepo
 import am.justchat.authentication.CurrentUser
+import am.justchat.authentication.SignUpActivity
 import am.justchat.models.Call
 import am.justchat.models.Contact
 import am.justchat.states.CallState
 import am.justchat.states.OnlineState
+import android.content.Intent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -49,23 +51,30 @@ class CallsFragment : Fragment() {
                         val jsonParser = JsonParser()
                         val callsJsonStr = Gson().toJson(response.body())
                         val callsJson = jsonParser.parse(callsJsonStr).asJsonObject
-                        val calls = callsJson.getAsJsonArray("calls")
-                        for (i in 0..calls.size().minus(1)) {
-                            val callJson: JsonObject = calls.get(i).asJsonObject
-                            val thisCall = Call(
-                                profileUsername = callJson.get("username").asString,
-                                callState = when (callJson.get("call_status").asString) {
-                                    "incoming" -> CallState.INCOMING
-                                    "outgoing" -> CallState.OUTGOING
-                                    "unanswered" -> CallState.UNANSWERED
-                                    else -> CallState.MISSED
-                                },
-                                callTime = callJson.get("call_time").asString,
-                                profileImage = callJson.get("profile_image").asString
-                            )
-                            callsArrayList.add(thisCall)
+                        try {
+                            val code: Int = callsJson.get("code").asInt
+                            if (code == 1) {
+                                moveToSignUp()
+                            }
+                        } catch (e: Exception) {
+                            val calls = callsJson.getAsJsonArray("calls")
+                            for (i in 0..calls.size().minus(1)) {
+                                val callJson: JsonObject = calls.get(i).asJsonObject
+                                val thisCall = Call(
+                                        profileUsername = callJson.get("username").asString,
+                                        callState = when (callJson.get("call_status").asString) {
+                                            "incoming" -> CallState.INCOMING
+                                            "outgoing" -> CallState.OUTGOING
+                                            "unanswered" -> CallState.UNANSWERED
+                                            else -> CallState.MISSED
+                                        },
+                                        callTime = callJson.get("call_time").asString,
+                                        profileImage = callJson.get("profile_image").asString
+                                )
+                                callsArrayList.add(thisCall)
+                            }
+                            fillCallsList(callsArrayList)
                         }
-                        fillCallsList(callsArrayList)
                     }
 
                     override fun onFailure(call: retrofit2.Call<JsonObject>, t: Throwable) {}
@@ -75,5 +84,11 @@ class CallsFragment : Fragment() {
 
     private fun fillCallsList(data: List<Call>) {
         callsList.adapter = CallsAdapter(data)
+    }
+
+    private fun moveToSignUp() {
+        val intent = Intent(context, SignUpActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
     }
 }

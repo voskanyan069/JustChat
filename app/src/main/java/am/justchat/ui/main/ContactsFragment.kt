@@ -9,8 +9,10 @@ import am.justchat.R
 import am.justchat.adapters.ContactsAdapter
 import am.justchat.api.repos.ContactsRepo
 import am.justchat.authentication.CurrentUser
+import am.justchat.authentication.SignUpActivity
 import am.justchat.models.Contact
 import am.justchat.states.OnlineState
+import android.content.Intent
 import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -59,20 +61,26 @@ class ContactsFragment : Fragment() {
                         val contactsJsonStr = Gson().toJson(response.body())
                         val contactsJson: JsonObject = jsonParser
                                 .parse(contactsJsonStr).asJsonObject
-                        val contacts: JsonArray = contactsJson.getAsJsonArray("contacts")
-
-                        for (i in 0..contacts.size().minus(1)) {
-                            val contactJson: JsonObject = contacts.get(i).asJsonObject
-                            val cont = Contact(
-                                    profileUsername = contactJson.get("username").asString,
-                                    profileOnlineState = when (contactJson.get("status").asString) {
-                                        "online" -> OnlineState.ONLINE
-                                        else -> OnlineState.OFFLINE
-                                    },
-                                    profileImage = contactJson.get("profile_image").asString)
-                            contactsArrayList.add(cont)
+                        try {
+                            val code: Int = contactsJson.get("code").asInt
+                            if (code == 1) {
+                                moveToSignUp()
+                            }
+                        } catch (e: Exception) {
+                            val contacts: JsonArray = contactsJson.getAsJsonArray("contacts")
+                            for (i in 0..contacts.size().minus(1)) {
+                                val contactJson: JsonObject = contacts.get(i).asJsonObject
+                                val cont = Contact(
+                                        profileUsername = contactJson.get("username").asString,
+                                        profileOnlineState = when (contactJson.get("status").asString) {
+                                            "online" -> OnlineState.ONLINE
+                                            else -> OnlineState.OFFLINE
+                                        },
+                                        profileImage = contactJson.get("profile_image").asString)
+                                contactsArrayList.add(cont)
+                            }
+                            fillContactsList(contactsArrayList)
                         }
-                        fillContactsList(contactsArrayList)
                     }
 
                     override fun onFailure(call: Call<JsonObject>, t: Throwable) {}
@@ -81,5 +89,11 @@ class ContactsFragment : Fragment() {
 
     private fun fillContactsList(data: ArrayList<Contact>) {
         contactsList.adapter = ContactsAdapter(data)
+    }
+
+    private fun moveToSignUp() {
+        val intent = Intent(activity, SignUpActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
     }
 }
