@@ -35,6 +35,7 @@
     <TextView
         android:id="@+id/contacts_item_online_state"
         android:layout_toEndOf="@id/contacts_item_profile_image_container"
+        android:layout_toStartOf="@id/contacts_item_call_contact"
         android:layout_marginStart="10sp"
         android:layout_below="@id/contacts_item_username"
         style="@style/Theme.JustChat.TextView.Message"
@@ -42,10 +43,17 @@
 
     <ImageView
         android:id="@+id/contacts_item_call_contact"
-        android:layout_toStartOf="@id/contacts_item_delete_contact"
+        android:layout_toStartOf="@id/contacts_item_chat_contact"
         style="@style/Theme.JustChat.ImageView.ListItem"
         android:src="@drawable/ic_phone_call"
         app:tint="@color/contactCall" />
+
+    <ImageView
+        android:id="@+id/contacts_item_chat_contact"
+        android:layout_toStartOf="@id/contacts_item_delete_contact"
+        style="@style/Theme.JustChat.ImageView.ListItem"
+        android:src="@drawable/ic_messages"
+        app:tint="@color/contactChat" />
 
     <ImageView
         android:id="@+id/contacts_item_delete_contact"
