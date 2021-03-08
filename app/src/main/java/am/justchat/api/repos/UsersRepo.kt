@@ -15,11 +15,11 @@ class UsersRepo {
     companion object {
         private var instance: UsersRepo? = null
 
-        fun getInstance(): UsersRepo? {
+        fun getInstance(): UsersRepo {
             if (instance == null) {
                 instance = UsersRepo()
             }
-            return instance
+            return instance as UsersRepo
         }
     }
 

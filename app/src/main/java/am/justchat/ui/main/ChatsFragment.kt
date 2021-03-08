@@ -10,6 +10,7 @@ import am.justchat.adapters.ChatsAdapter
 import am.justchat.adapters.StoryAdapter
 import am.justchat.api.repos.ChatsRepo
 import am.justchat.api.repos.ContactsRepo
+import am.justchat.api.repos.StoriesRepo
 import am.justchat.authentication.CurrentUser
 import am.justchat.authentication.SignUpActivity
 import am.justchat.models.Chat
@@ -29,6 +30,8 @@ class ChatsFragment : Fragment() {
     private lateinit var storiesList: RecyclerView
     private lateinit var chatsList: RecyclerView
     private lateinit var sharedPreference: SharedPreferences
+    private val storiesRepo = StoriesRepo.getInstance()
+    private val jsonParser = JsonParser()
     private var login: String = "null"
     private val chatsArrayList = arrayListOf<Chat>()
     private val storiesArrayList = arrayListOf<Story>()
@@ -38,28 +41,104 @@ class ChatsFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_chats, container, false)
 
         sharedPreference = SharedPreference.getInstance(context!!).sharedPreferences
+
+        getUserStoriesList()
         getChatsList()
-        val stories = listOf(
-            Story("USERNAME_1", "https://images.unsplash.com/photo-1614631446449-e2c7a0cc1428?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"),
-            Story("USERNAME_2", "https://images.unsplash.com/photo-1614676367446-17828873a71c?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=675&q=80"),
-            Story("USERNAME_3", "https://images.unsplash.com/photo-1614676314170-3eb1d98d0a25?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"),
-            Story("USERNAME_4", "https://images.unsplash.com/photo-1614613772023-6ef3a1618df3?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80")
-        )
 
         storiesList = root.findViewById(R.id.stories_list)
-        storiesList.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.HORIZONTAL, false)
-        fillStoriesList(stories)
-
         chatsList = root.findViewById(R.id.chats_list)
+        storiesList.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.HORIZONTAL, false)
         chatsList.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.VERTICAL, false)
 
         return root
     }
 
-    private fun getStoriesList() {
+    private fun getUserStoriesList() {
         if (login == "null") {
             login = sharedPreference.getString("login", null).toString()
         }
+
+        storiesRepo.storiesService
+            ?.getUserStories(login)
+            ?.enqueue(object : Callback<JsonObject> {
+                override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                    val storiesJsonStr = Gson().toJson(response.body())
+                    val storiesJson: JsonObject = jsonParser.parse(storiesJsonStr).asJsonObject
+                    try {
+                        val code: Int = storiesJson.get("code").asInt
+                        if (code == 1) {
+                            moveToSignUp()
+                        }
+                    } catch (e: Exception) {
+                        val stories: JsonArray = storiesJson.getAsJsonArray("stories")
+                        for (i in 0..stories.size().minus(1)) {
+                            val storyJson: JsonObject = stories.get(i).asJsonObject
+                            val story = Story(
+                                profileUsername = storyJson.get("login").asString,
+                                profileImage = storyJson.get("profile_image").asString,
+                                mediaPath = storyJson.get("path").asString
+                            )
+                            storiesArrayList.add(story)
+                        }
+                        getContactsStoriesList()
+                    }
+                }
+
+                override fun onFailure(call: Call<JsonObject>, t: Throwable) {}
+            })
+    }
+
+    private fun getContactsStoriesList() {
+        val contactsRepo = ContactsRepo.getInstance()
+        contactsRepo.contactsService
+            ?.getUserContacts(login)
+            ?.enqueue(object : Callback<JsonObject> {
+                override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                    val contactsJsonStr = Gson().toJson(response.body())
+                    val contactsJson: JsonObject = jsonParser.parse(contactsJsonStr).asJsonObject
+                    try {
+                        val code: Int = contactsJson.get("code").asInt
+                        if (code == 1) {
+                            moveToSignUp()
+                        }
+                    } catch (e: Exception) {
+                        val contacts: JsonArray = contactsJson.getAsJsonArray("contacts")
+                        for (i in 0..contacts.size().minus(1)) {
+                            val contactJson: JsonObject = contacts.get(i).asJsonObject
+                            storiesRepo.storiesService
+                                ?.getUserStories(contactJson.get("login").asString)
+                                ?.enqueue(object : Callback<JsonObject> {
+                                    override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                                        val storiesJsonStr = Gson().toJson(response.body())
+                                        val storiesJson: JsonObject = jsonParser.parse(storiesJsonStr).asJsonObject
+                                        try {
+                                            val code: Int = storiesJson.get("code").asInt
+                                            if (code == 1) {
+                                                moveToSignUp()
+                                            }
+                                        } catch (e: Exception) {
+                                            val stories: JsonArray = storiesJson.getAsJsonArray("stories")
+                                            for (j in 0..stories.size().minus(1)) {
+                                                val storyJson: JsonObject = stories.get(j).asJsonObject
+                                                val story = Story(
+                                                    profileUsername = storyJson.get("login").asString,
+                                                    profileImage = storyJson.get("profile_image").asString,
+                                                    mediaPath = storyJson.get("path").asString
+                                                )
+                                                storiesArrayList.add(story)
+                                            }
+                                            fillStoriesList(storiesArrayList)
+                                        }
+                                    }
+
+                                    override fun onFailure(call: Call<JsonObject>, t: Throwable) {}
+                                })
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<JsonObject>, t: Throwable) {}
+            })
     }
 
     private fun getChatsList() {
@@ -68,41 +147,37 @@ class ChatsFragment : Fragment() {
         }
 
         val chatsRepo = ChatsRepo.getInstance()
-        if (login != "null") {
-            chatsRepo.chatsService
-                ?.getUserChats(login)
-                ?.enqueue(object : Callback<JsonObject> {
-                    override fun onResponse(
-                        call: Call<JsonObject>,
-                        response: Response<JsonObject>
-                    ) {
-                        val jsonParser = JsonParser()
-                        val chatsJsonStr = Gson().toJson(response.body())
-                        val chatsJson: JsonObject = jsonParser.parse(chatsJsonStr).asJsonObject
-
-                        try {
-                            val code: Int = chatsJson.get("code").asInt
-                            if (code == 1) {
-                                moveToSignUp()
-                            }
-                        } catch (e: Exception) {
-                            val chats: JsonArray = chatsJson.getAsJsonArray("chats")
-                            for (i in 0..chats.size().minus(1)) {
-                                val chatJson: JsonObject = chats.get(i).asJsonObject
-                                val chat = Chat(
-                                    profileUsername = chatJson.get("username").asString,
-                                    lastMessage = chatJson.get("last_msg").asString,
-                                    profileImage = chatJson.get("profile_image").asString
-                                )
-                                chatsArrayList.add(chat)
-                            }
-                            fillChatsList(chatsArrayList)
+        chatsRepo.chatsService
+            ?.getUserChats(login)
+            ?.enqueue(object : Callback<JsonObject> {
+                override fun onResponse(
+                    call: Call<JsonObject>,
+                    response: Response<JsonObject>
+                ) {
+                    val chatsJsonStr = Gson().toJson(response.body())
+                    val chatsJson: JsonObject = jsonParser.parse(chatsJsonStr).asJsonObject
+                    try {
+                        val code: Int = chatsJson.get("code").asInt
+                        if (code == 1) {
+                            moveToSignUp()
                         }
+                    } catch (e: Exception) {
+                        val chats: JsonArray = chatsJson.getAsJsonArray("chats")
+                        for (i in 0..chats.size().minus(1)) {
+                            val chatJson: JsonObject = chats.get(i).asJsonObject
+                            val chat = Chat(
+                                profileUsername = chatJson.get("username").asString,
+                                lastMessage = chatJson.get("last_msg").asString,
+                                profileImage = chatJson.get("profile_image").asString
+                            )
+                            chatsArrayList.add(chat)
+                        }
+                        fillChatsList(chatsArrayList)
                     }
+                }
 
-                    override fun onFailure(call: Call<JsonObject>, t: Throwable) {}
-                })
-        }
+                override fun onFailure(call: Call<JsonObject>, t: Throwable) {}
+            })
     }
 
     private fun fillStoriesList(data: List<Story>) {

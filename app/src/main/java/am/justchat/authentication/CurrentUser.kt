@@ -4,5 +4,6 @@ class CurrentUser {
     companion object {
         var login: String? = null
         var username: String? = null
+        var profileImage: String? = null
     }
 }

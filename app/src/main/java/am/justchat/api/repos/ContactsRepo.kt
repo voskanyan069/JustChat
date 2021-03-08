@@ -9,11 +9,11 @@ class ContactsRepo {
     companion object {
         private var instance: ContactsRepo? = null
 
-        fun getInstance(): ContactsRepo? {
+        fun getInstance(): ContactsRepo {
             if (instance == null) {
                 instance = ContactsRepo()
             }
-            return instance
+            return instance as ContactsRepo
         }
     }
 

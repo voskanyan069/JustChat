@@ -46,7 +46,7 @@ class SignUpActivity : AppCompatActivity() {
         errorMessage = findViewById(R.id.sign_up_error_msg)
         signUpButton = findViewById(R.id.sign_up_submit_btn)
 
-        usersRepo = UsersRepo.getInstance()!!
+        usersRepo = UsersRepo.getInstance()
         progressDialog = ProgressDialog(this)
         progressDialog.setTitle("Loading...")
         progressDialog.setMessage("Please wait until loading end.")

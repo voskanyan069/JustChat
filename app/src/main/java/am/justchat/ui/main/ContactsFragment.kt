@@ -47,7 +47,7 @@ class ContactsFragment : Fragment() {
     }
 
     private fun getContactsList() {
-        val contactsRepo = ContactsRepo.getInstance()!!
+        val contactsRepo = ContactsRepo.getInstance()
         contactsRepo.contactsService!!
                 .getUserContacts(CurrentUser.login!!)
                 .enqueue(object : Callback<JsonObject> {

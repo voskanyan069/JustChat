@@ -74,6 +74,9 @@ class MainActivity : AppCompatActivity() {
                             } catch (e: Exception) {
                                 CurrentUser.login = login
                                 CurrentUser.username = username
+                                CurrentUser.profileImage = userJson
+                                    .get("user").asJsonObject
+                                    .get("profile_image").asString
                             }
                         }
 
