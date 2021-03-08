@@ -11,7 +11,6 @@ import am.justchat.adapters.StoryAdapter
 import am.justchat.api.repos.ChatsRepo
 import am.justchat.api.repos.ContactsRepo
 import am.justchat.api.repos.StoriesRepo
-import am.justchat.authentication.CurrentUser
 import am.justchat.authentication.SignUpActivity
 import am.justchat.models.Chat
 import am.justchat.models.Story

@@ -14,6 +14,7 @@ class ContactsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     lateinit var profileUsername: TextView
     lateinit var profileOnlineState: TextView
     lateinit var callContactButton: ImageView
+    lateinit var chatContactButton: ImageView
     lateinit var deleteContactButton: ImageView
 
     fun bind() {
@@ -22,6 +23,7 @@ class ContactsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         profileUsername = itemView.findViewById(R.id.contacts_item_username)
         profileOnlineState = itemView.findViewById(R.id.contacts_item_online_state)
         callContactButton = itemView.findViewById(R.id.contacts_item_call_contact)
+        chatContactButton = itemView.findViewById(R.id.contacts_item_chat_contact)
         deleteContactButton = itemView.findViewById(R.id.contacts_item_delete_contact)
     }
 }

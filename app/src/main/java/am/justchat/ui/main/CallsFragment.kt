@@ -11,9 +11,7 @@ import am.justchat.api.repos.CallsRepo
 import am.justchat.authentication.CurrentUser
 import am.justchat.authentication.SignUpActivity
 import am.justchat.models.Call
-import am.justchat.models.Contact
 import am.justchat.states.CallState
-import am.justchat.states.OnlineState
 import android.content.Intent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView

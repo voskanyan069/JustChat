@@ -9,6 +9,7 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -123,7 +124,7 @@ class SignUpActivity : AppCompatActivity() {
 
                                 override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                                     cancelProgressDialog()
-                                    println("ERROR: ${t.message}")
+                                    Log.e("Retrofit", "Fetch error", t)
                                 }
                             })
                     }

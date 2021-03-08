@@ -30,7 +30,10 @@ class ContactsAdapter(private val dataSet: ArrayList<Contact>) : RecyclerView.Ad
         Picasso.get().load(item.profileImage).fit().centerCrop().into(holder.profileImage)
 
         holder.callContactButton.setOnClickListener {
-            println("CALL BUTTON WAS PRESSED")
+        }
+
+        holder.chatContactButton.setOnClickListener {
+
         }
 
         holder.deleteContactButton.setOnClickListener {
