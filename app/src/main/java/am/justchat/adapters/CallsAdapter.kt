@@ -27,7 +27,7 @@ class CallsAdapter(private val dataSet: List<Call>) : RecyclerView.Adapter<Calls
         }
 
         holder.profileUsername.text = item.profileUsername
-        holder.callMessage.text = item.callMessage
+        holder.callMessage.text = item.callTime
         holder.callStateImage.setImageResource(callState)
         Picasso.get().load(item.profileImage).fit().centerCrop().into(holder.profileImage)
     }
