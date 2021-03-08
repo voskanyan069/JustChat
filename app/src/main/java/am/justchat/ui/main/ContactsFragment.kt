@@ -9,21 +9,19 @@ import am.justchat.R
 import am.justchat.adapters.ContactsAdapter
 import am.justchat.api.repos.ContactsRepo
 import am.justchat.authentication.CurrentUser
-import am.justchat.models.Contacts
+import am.justchat.models.Contact
 import am.justchat.states.OnlineState
 import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.*
-import org.json.JSONArray
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class ContactsFragment : Fragment() {
-    private lateinit var contactsRepo: ContactsRepo
     private lateinit var addContactButton: ImageView
-    private val contactsArrayList = arrayListOf<Contacts>()
+    private val contactsArrayList = arrayListOf<Contact>()
 
     companion object {
         private lateinit var contactsList: RecyclerView
@@ -39,7 +37,6 @@ class ContactsFragment : Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_contacts, container, false)
 
-        contactsRepo = ContactsRepo.getInstance()!!
         getContactsList()
 
         addContactButton = root.findViewById(R.id.add_contact_btn)
@@ -50,6 +47,7 @@ class ContactsFragment : Fragment() {
     }
 
     private fun getContactsList() {
+        val contactsRepo = ContactsRepo.getInstance()!!
         contactsRepo.contactsService!!
                 .getUserContacts(CurrentUser.login!!)
                 .enqueue(object : Callback<JsonObject> {
@@ -65,7 +63,7 @@ class ContactsFragment : Fragment() {
 
                         for (i in 0..contacts.size().minus(1)) {
                             val contactJson: JsonObject = contacts.get(i).asJsonObject
-                            val cont = Contacts(
+                            val cont = Contact(
                                     profileUsername = contactJson.get("username").asString,
                                     profileOnlineState = when (contactJson.get("status").asString) {
                                         "online" -> OnlineState.ONLINE
@@ -74,7 +72,6 @@ class ContactsFragment : Fragment() {
                                     profileImage = contactJson.get("profile_image").asString)
                             contactsArrayList.add(cont)
                         }
-
                         fillContactsList(contactsArrayList)
                     }
 
@@ -82,7 +79,7 @@ class ContactsFragment : Fragment() {
                 })
     }
 
-    private fun fillContactsList(data: ArrayList<Contacts>) {
+    private fun fillContactsList(data: ArrayList<Contact>) {
         contactsList.adapter = ContactsAdapter(data)
     }
 }

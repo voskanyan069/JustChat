@@ -55,14 +55,17 @@ class MainActivity : AppCompatActivity() {
             val username = sharedPreference.getString("username", null)
             val usersRepo = UsersRepo()
 
-            usersRepo.usersService!!
-                    .getUser(login.toString())
+            if (login != null) {
+                usersRepo.usersService!!
+                    .getUser(login)
                     .enqueue(object : Callback<JsonObject> {
-                        override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                        override fun onResponse(
+                            call: Call<JsonObject>,
+                            response: Response<JsonObject>
+                        ) {
                             val jsonParser = JsonParser()
                             val userJsonStr = Gson().toJson(response.body())
                             val userJson: JsonObject = jsonParser.parse(userJsonStr).asJsonObject
-                            println(userJson.toString())
                             try {
                                 val code: Int = userJson.get("code").asInt
                                 if (code == 1) {
@@ -76,6 +79,7 @@ class MainActivity : AppCompatActivity() {
 
                         override fun onFailure(call: Call<JsonObject>, t: Throwable) {}
                     })
+            }
         }
     }
 

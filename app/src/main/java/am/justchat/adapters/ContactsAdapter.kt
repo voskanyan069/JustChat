@@ -2,7 +2,7 @@ package am.justchat.adapters
 
 import am.justchat.R
 import am.justchat.holders.ContactsViewHolder
-import am.justchat.models.Contacts
+import am.justchat.models.Contact
 import am.justchat.states.OnlineState
 import am.justchat.ui.main.ContactsFragment
 import android.view.LayoutInflater
@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 
-class ContactsAdapter(private val dataSet: ArrayList<Contacts>) : RecyclerView.Adapter<ContactsViewHolder>() {
+class ContactsAdapter(private val dataSet: ArrayList<Contact>) : RecyclerView.Adapter<ContactsViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactsViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.contacts_list_item, parent, false)
         return ContactsViewHolder(view)

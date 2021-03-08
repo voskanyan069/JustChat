@@ -2,7 +2,7 @@ package am.justchat.authentication
 
 import am.justchat.R
 import am.justchat.activities.MainActivity
-import am.justchat.api.models.User
+import am.justchat.models.User
 import am.justchat.api.repos.UsersRepo
 import am.justchat.storage.SharedPreference
 import android.app.ProgressDialog
@@ -58,18 +58,21 @@ class SignUpActivity : AppCompatActivity() {
         signUpButton.setOnClickListener {
             when {
                 loginInput.text.isBlank() -> errorMessage.text = getString(R.string.incorrect_login)
-                usernameInput.text.isBlank() -> errorMessage.text =
-                    getString(R.string.incorrect_username)
-                passwordInput.text.isBlank() -> errorMessage.text =
-                    getString(R.string.incorrect_password)
-                passwordInput.text.length < 6 -> errorMessage.text =
-                    getString(R.string.password_min_len)
-                passwordInput.text.length > 16 -> errorMessage.text =
-                    getString(R.string.password_max_ken)
+                loginInput.text.length < 6 -> errorMessage.text = getString(R.string.login_min_len)
+                loginInput.text.length > 16 -> errorMessage.text = getString(R.string.login_max_len)
+                loginInput.text.contains("/") -> errorMessage.text = getString(R.string.not_allowed_login)
+                loginInput.text.contains("?") -> errorMessage.text = getString(R.string.not_allowed_login)
+                loginInput.text.contains("&") -> errorMessage.text = getString(R.string.not_allowed_login)
+                loginInput.text.contains("&") -> errorMessage.text = getString(R.string.not_allowed_login)
+                usernameInput.text.isBlank() -> errorMessage.text = getString(R.string.incorrect_username)
+                usernameInput.text.length < 6 -> errorMessage.text = getString(R.string.username_min_len)
+                usernameInput.text.length > 16 -> errorMessage.text = getString(R.string.username_max_len)
+                passwordInput.text.isBlank() -> errorMessage.text = getString(R.string.incorrect_password)
+                passwordInput.text.length < 6 -> errorMessage.text = getString(R.string.password_min_len)
+                passwordInput.text.length > 16 -> errorMessage.text = getString(R.string.password_max_ken)
                 else -> {
                     errorMessage.text = ""
                     progressDialog.show()
-
                     val user = User(
                             loginInput.text.toString(),
                             usernameInput.text.toString(),

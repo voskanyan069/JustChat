@@ -2,14 +2,14 @@ package am.justchat.adapters
 
 import am.justchat.R
 import am.justchat.holders.CallsViewHolder
-import am.justchat.models.Calls
+import am.justchat.models.Call
 import am.justchat.states.CallState
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 
-class CallsAdapter(private val dataSet: List<Calls>) : RecyclerView.Adapter<CallsViewHolder>() {
+class CallsAdapter(private val dataSet: List<Call>) : RecyclerView.Adapter<CallsViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CallsViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.calls_list_item, parent, false)
         return CallsViewHolder(view)

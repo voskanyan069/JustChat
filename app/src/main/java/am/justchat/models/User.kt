@@ -1,4 +1,4 @@
-package am.justchat.api.models
+package am.justchat.models
 
 import com.google.gson.annotations.SerializedName
 

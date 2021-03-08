@@ -22,7 +22,12 @@
     <string name="incorrect_login">Login was incorrect</string>
     <string name="incorrect_username">Username was incorrect</string>
     <string name="incorrect_password">Password was incorrect</string>
+    <string name="login_min_len">Login minimal length is 6</string>
+    <string name="login_max_len">Login maximal length is 16</string>
+    <string name="username_min_len">Username minimal length is 6</string>
+    <string name="username_max_len">Username maximal length is 16</string>
     <string name="password_min_len">Password minimal length is 6</string>
-    <string name="password_max_ken">Password maximum len is 16</string>
+    <string name="password_max_ken">Password maximum length is 16</string>
     <string name="taken_login">The login was already taken</string>
+    <string name="not_allowed_login">Not allowed login</string>
 </resources>
