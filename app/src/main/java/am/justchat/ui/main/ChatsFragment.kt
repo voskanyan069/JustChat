@@ -14,9 +14,11 @@ import am.justchat.api.repos.StoriesRepo
 import am.justchat.authentication.SignUpActivity
 import am.justchat.models.Chat
 import am.justchat.models.Story
+import am.justchat.states.OnlineState
 import am.justchat.storage.SharedPreference
 import android.content.Intent
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.*
@@ -122,30 +124,30 @@ class ChatsFragment : Fragment() {
                                             val storiesJsonStr = Gson().toJson(response.body())
                                             val storiesJson: JsonObject = jsonParser.parse(storiesJsonStr).asJsonObject
                                             try {
-                                                val code: Int = storiesJson.get("code").asInt
-                                                if (code == 1) {
-                                                    moveToSignUp()
-                                                }
-                                            } catch (e: Exception) {
                                                 val storyJson: JsonObject = storiesJson.getAsJsonObject("stories")
                                                 val storyMediaPathJson: JsonArray = storyJson.getAsJsonArray("media_path")
                                                 val storyMediaPath = arrayListOf<String>()
                                                 for (k in 0..storyMediaPathJson.size().minus(1)) {
-                                                    storyMediaPath.add(storyMediaPathJson.get(k).asString)
+                                                    storyMediaPath.add(storyMediaPathJson.get(k).asJsonObject.get("path").asString)
                                                 }
                                                 val story = Story(
                                                         profileUsername = storyJson.get("login").asString,
                                                         profileImage = storyJson.get("profile_image").asString,
                                                         mediaPath = storyMediaPath
                                                 )
-                                                println("${story.profileUsername} CONTACT MEDIA PATH - $storyMediaPath")
+                                                Log.d("mTag", "STORY ADDED")
                                                 storiesArrayList.add(story)
+                                            } catch (ignored: Exception) {
+                                                Log.d("mTag", "ERROR WAS CATCH", ignored)
                                             }
                                         }
 
-                                        override fun onFailure(call: Call<JsonObject>, t: Throwable) {}
+                                        override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                                            Log.d("mTag", "ON GET STORY FAIL", t)
+                                        }
                                     })
                         }
+                        Log.d("mTag", "FILL STORIES ARRAY LIST")
                         fillStoriesList(storiesArrayList)
                     }
                 }
@@ -180,6 +182,10 @@ class ChatsFragment : Fragment() {
                             val chatJson: JsonObject = chats.get(i).asJsonObject
                             val chat = Chat(
                                 profileUsername = chatJson.get("username").asString,
+                                isOnline = when (chatJson.get("status").asString) {
+                                    "online" -> OnlineState.ONLINE
+                                    else -> OnlineState.OFFLINE
+                                },
                                 lastMessage = chatJson.get("last_msg").asString,
                                 profileImage = chatJson.get("profile_image").asString
                             )
@@ -195,10 +201,12 @@ class ChatsFragment : Fragment() {
 
     private fun fillStoriesList(data: List<Story>) {
         storiesList.adapter = StoryAdapter(data)
+        storiesList.adapter?.notifyDataSetChanged()
     }
 
     private fun fillChatsList(data: List<Chat>) {
         chatsList.adapter = ChatsAdapter(data)
+        chatsList.adapter?.notifyDataSetChanged()
     }
 
     private fun moveToSignUp() {

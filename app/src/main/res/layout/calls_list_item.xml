@@ -5,25 +5,17 @@
     android:layout_height="80sp"
     android:padding="10sp">
 
-    <FrameLayout
-        android:id="@+id/call_item_profile_image_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:background="@drawable/user_avatar_grey_layout">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/call_item_profile_image"
-            android:layout_width="50sp"
-            android:layout_height="50sp"
-            android:src="@drawable/ic_launcher_background"/>
-    </FrameLayout>
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/call_item_profile_image"
+        android:layout_width="50sp"
+        android:layout_height="50sp"
+        android:src="@drawable/ic_launcher_background"/>
 
     <TextView
         android:id="@+id/call_item_username"
         android:layout_marginStart="10sp"
         android:layout_toStartOf="@id/call_item_state"
-        android:layout_toEndOf="@id/call_item_profile_image_container"
+        android:layout_toEndOf="@id/call_item_profile_image"
         style="@style/Theme.JustChat.TextView.ProfileUsername"
         android:textSize="16sp"
         android:textColor="@color/grey"
@@ -33,7 +25,7 @@
     <TextView
         android:id="@+id/call_item_last_call"
         android:layout_below="@id/call_item_username"
-        android:layout_toEndOf="@id/call_item_profile_image_container"
+        android:layout_toEndOf="@id/call_item_profile_image"
         android:layout_marginStart="10sp"
         style="@style/Theme.JustChat.TextView.Message"
         android:text="@string/call_minutes" />

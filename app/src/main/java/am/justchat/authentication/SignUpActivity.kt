@@ -59,14 +59,14 @@ class SignUpActivity : AppCompatActivity() {
         signUpButton.setOnClickListener {
             when {
                 loginInput.text.isBlank() -> errorMessage.text = getString(R.string.incorrect_login)
-                loginInput.text.length < 6 -> errorMessage.text = getString(R.string.login_min_len)
+                loginInput.text.length < 4 -> errorMessage.text = getString(R.string.login_min_len)
                 loginInput.text.length > 16 -> errorMessage.text = getString(R.string.login_max_len)
                 loginInput.text.contains("/") -> errorMessage.text = getString(R.string.not_allowed_login)
                 loginInput.text.contains("?") -> errorMessage.text = getString(R.string.not_allowed_login)
                 loginInput.text.contains("&") -> errorMessage.text = getString(R.string.not_allowed_login)
                 loginInput.text.contains("&") -> errorMessage.text = getString(R.string.not_allowed_login)
                 usernameInput.text.isBlank() -> errorMessage.text = getString(R.string.incorrect_username)
-                usernameInput.text.length < 6 -> errorMessage.text = getString(R.string.username_min_len)
+                usernameInput.text.length < 4 -> errorMessage.text = getString(R.string.username_min_len)
                 usernameInput.text.length > 16 -> errorMessage.text = getString(R.string.username_max_len)
                 passwordInput.text.isBlank() -> errorMessage.text = getString(R.string.incorrect_password)
                 passwordInput.text.length < 6 -> errorMessage.text = getString(R.string.password_min_len)

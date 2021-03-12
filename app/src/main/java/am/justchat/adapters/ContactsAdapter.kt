@@ -7,6 +7,7 @@ import am.justchat.states.OnlineState
 import am.justchat.ui.main.ContactsFragment
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 
@@ -24,7 +25,12 @@ class ContactsAdapter(private val dataSet: ArrayList<Contact>) : RecyclerView.Ad
             OnlineState.ONLINE -> "Online"
             OnlineState.OFFLINE -> "Offline"
         }
+        val containerColor = when(item.profileOnlineState) {
+            OnlineState.ONLINE -> R.drawable.user_avatar_green_layout
+            OnlineState.OFFLINE -> R.drawable.user_avatar_grey_layout
+        }
 
+        holder.profileImageContainer.background = ContextCompat.getDrawable(holder.profileImageContainer.context, containerColor)
         holder.profileUsername.text = item.profileUsername
         holder.profileOnlineState.text = onlineState
         Picasso.get().load(item.profileImage).fit().centerCrop().into(holder.profileImage)

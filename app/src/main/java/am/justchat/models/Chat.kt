@@ -1,3 +1,5 @@
 package am.justchat.models
 
-class Chat(val profileUsername: String, val lastMessage: String, val profileImage: String)
+import am.justchat.states.OnlineState
+
+class Chat(val profileUsername: String, val isOnline: OnlineState, val lastMessage: String, val profileImage: String)

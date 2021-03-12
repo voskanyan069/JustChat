@@ -8,14 +8,14 @@ import androidx.recyclerview.widget.RecyclerView
 import de.hdodenhof.circleimageview.CircleImageView
 
 class CallsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    lateinit var profileUsername: TextView
     lateinit var profileImage: CircleImageView
+    lateinit var profileUsername: TextView
     lateinit var callMessage: TextView
     lateinit var callStateImage: ImageView
 
     fun bind() {
-        profileUsername = itemView.findViewById(R.id.call_item_username)
         profileImage = itemView.findViewById(R.id.call_item_profile_image)
+        profileUsername = itemView.findViewById(R.id.call_item_username)
         callMessage = itemView.findViewById(R.id.call_item_last_call)
         callStateImage = itemView.findViewById(R.id.call_item_state)
     }
