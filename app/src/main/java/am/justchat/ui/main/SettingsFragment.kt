@@ -6,9 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import am.justchat.R
+import am.justchat.activities.AuthenticationActivity
 import am.justchat.api.repos.UsersRepo
 import am.justchat.authentication.CurrentUser
-import am.justchat.authentication.SignUpActivity
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.widget.TextView
@@ -27,6 +27,7 @@ class SettingsFragment : Fragment() {
     private lateinit var profileImage: CircleImageView
     private lateinit var profileLogin: TextView
     private lateinit var profileUsername: TextView
+    private lateinit var logOutText: TextView
     private lateinit var notificationSwitcher: SwitchMaterial
 
     override fun onCreateView(
@@ -38,8 +39,11 @@ class SettingsFragment : Fragment() {
         profileImage = root.findViewById(R.id.settings_avatar)
         profileLogin = root.findViewById(R.id.settings_login)
         profileUsername = root.findViewById(R.id.settings_username)
+        logOutText = root.findViewById(R.id.settings_log_out)
         notificationSwitcher = root.findViewById(R.id.notification_enabled)
+
         getUser()
+        logOut()
         switchNotificationsState()
 
         return root
@@ -75,10 +79,16 @@ class SettingsFragment : Fragment() {
             })
     }
 
+    private fun logOut() {
+        logOutText.setOnClickListener {
+             moveToSignUp()
+        }
+    }
+
     private fun switchNotificationsState() = notificationSwitcher.setOnCheckedChangeListener { _, _ -> }
 
     private fun moveToSignUp() {
-        val intent = Intent(context, SignUpActivity::class.java)
+        val intent = Intent(context, AuthenticationActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }

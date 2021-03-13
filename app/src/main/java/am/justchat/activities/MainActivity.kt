@@ -3,7 +3,7 @@ package am.justchat.activities
 import am.justchat.R
 import am.justchat.api.repos.UsersRepo
 import am.justchat.authentication.CurrentUser
-import am.justchat.authentication.SignUpActivity
+import am.justchat.fragments.SwitchFragment
 import am.justchat.storage.SharedPreference
 import am.justchat.ui.main.CallsFragment
 import am.justchat.ui.main.ChatsFragment
@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
         isAuthenticated()
         if (savedInstanceState == null) {
-            switchFragment(ChatsFragment())
+            SwitchFragment.switch(this, ChatsFragment(), R.id.fragment_container)
         }
         init()
     }
@@ -99,14 +99,12 @@ class MainActivity : AppCompatActivity() {
                     R.id.tab_contacts -> selectedFragment = ContactsFragment()
                     R.id.tab_settings -> selectedFragment = SettingsFragment()
                 }
-                switchFragment(selectedFragment!!)
+                SwitchFragment.switch(this, selectedFragment!!, R.id.fragment_container)
                 true
             }
 
-    private fun switchFragment(fragment: Fragment) = supportFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).commit()
-
     private fun moveToSignUp() {
-        val intent = Intent(this, SignUpActivity::class.java)
+        val intent = Intent(this, AuthenticationActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }

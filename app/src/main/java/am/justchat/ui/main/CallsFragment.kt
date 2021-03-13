@@ -6,10 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import am.justchat.R
+import am.justchat.activities.AuthenticationActivity
 import am.justchat.adapters.CallsAdapter
 import am.justchat.api.repos.CallsRepo
 import am.justchat.authentication.CurrentUser
-import am.justchat.authentication.SignUpActivity
 import am.justchat.models.Call
 import am.justchat.states.CallState
 import android.content.Intent
@@ -85,7 +85,7 @@ class CallsFragment : Fragment() {
     }
 
     private fun moveToSignUp() {
-        val intent = Intent(context, SignUpActivity::class.java)
+        val intent = Intent(context, AuthenticationActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }

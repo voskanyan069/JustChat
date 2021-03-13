@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".authentication.SignUpFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/auth_background_image"
+            android:src="@drawable/sign_up_background"
+            style="@style/Theme.JustChat.ImageView.Authentication.Background" />
+
+        <EditText
+            android:id="@+id/sign_up_login_input"
+            android:layout_below="@id/auth_background_image"
+            style="@style/Theme.JustChat.EditText.Authentication"
+            android:hint="@string/login" />
+
+        <EditText
+            android:id="@+id/sign_up_username_input"
+            android:layout_below="@id/sign_up_login_input"
+            style="@style/Theme.JustChat.EditText.Authentication"
+            android:hint="@string/username" />
+
+        <EditText
+            android:id="@+id/sign_up_password_input"
+            android:layout_below="@id/sign_up_username_input"
+            style="@style/Theme.JustChat.EditText.Authentication"
+            android:hint="@string/password"
+            android:inputType="textPassword" />
+
+        <TextView
+            android:id="@+id/sign_up_error_msg"
+            android:layout_below="@id/sign_up_password_input"
+            style="@style/Theme.JustChat.TextView.ErrorMessage" />
+
+        <Button
+            android:id="@+id/sign_up_submit_btn"
+            android:layout_below="@id/sign_up_error_msg"
+            style="@style/Theme.JustChat.Button.Authentication"
+            android:text="@string/sign_up" />
+
+        <TextView
+            android:id="@+id/log_in_text"
+            android:layout_below="@id/sign_up_submit_btn"
+            style="@style/Theme.JustChat.TextView.Authentication"
+            android:text="or\nLog in to your account" />
+    </RelativeLayout>
+</ScrollView>

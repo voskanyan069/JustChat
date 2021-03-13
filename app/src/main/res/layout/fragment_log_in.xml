@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".authentication.SignUpActivity">
+    tools:context=".authentication.LogInFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -12,39 +12,37 @@
 
         <ImageView
             android:id="@+id/auth_background_image"
-            android:src="@drawable/sign_up_background"
+            android:src="@drawable/log_in_background"
             style="@style/Theme.JustChat.ImageView.Authentication.Background" />
 
         <EditText
-            android:id="@+id/sign_up_login_input"
+            android:id="@+id/log_in_login_input"
             android:layout_below="@id/auth_background_image"
             style="@style/Theme.JustChat.EditText.Authentication"
             android:hint="@string/login" />
 
         <EditText
-            android:id="@+id/sign_up_username_input"
-            android:layout_below="@id/sign_up_login_input"
-            style="@style/Theme.JustChat.EditText.Authentication"
-            android:hint="@string/username" />
-
-        <EditText
-            android:id="@+id/sign_up_password_input"
-            android:layout_below="@id/sign_up_username_input"
+            android:id="@+id/log_in_password_input"
+            android:layout_below="@id/log_in_login_input"
             style="@style/Theme.JustChat.EditText.Authentication"
             android:hint="@string/password"
             android:inputType="textPassword" />
 
         <TextView
-            android:id="@+id/sign_up_error_msg"
-            android:layout_below="@id/sign_up_password_input"
-            style="@style/Theme.JustChat.TextView.ErrorMessage"
-            />
+            android:id="@+id/log_in_error_msg"
+            android:layout_below="@id/log_in_password_input"
+            style="@style/Theme.JustChat.TextView.ErrorMessage" />
 
         <Button
-            android:id="@+id/sign_up_submit_btn"
-            android:layout_below="@id/sign_up_error_msg"
+            android:id="@+id/log_in_submit_btn"
+            android:layout_below="@id/log_in_error_msg"
             style="@style/Theme.JustChat.Button.Authentication"
-            android:textColor="@color/white"
-            android:text="@string/sign_up" />
+            android:text="@string/log_in" />
+
+        <TextView
+            android:id="@+id/create_account_text"
+            android:layout_below="@id/log_in_submit_btn"
+            style="@style/Theme.JustChat.TextView.Authentication"
+            android:text="or\nCreate new account" />
     </RelativeLayout>
 </ScrollView>
