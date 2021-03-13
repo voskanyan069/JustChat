@@ -1,6 +1,6 @@
 package am.justchat.states
 
-enum class CallState {
+enum class CallsState {
     INCOMING,
     OUTGOING,
     MISSED,

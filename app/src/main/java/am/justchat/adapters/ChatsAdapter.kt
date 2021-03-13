@@ -1,9 +1,11 @@
 package am.justchat.adapters
 
 import am.justchat.R
+import am.justchat.activities.MessengerActivity
 import am.justchat.holders.ChatsViewHolder
 import am.justchat.models.Chat
 import am.justchat.states.OnlineState
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -20,7 +22,6 @@ class ChatsAdapter(private val dataSet: List<Chat>) : RecyclerView.Adapter<Chats
         holder.bind()
 
         val item = dataSet[position]
-
         val containerColor = when (item.isOnline) {
             OnlineState.ONLINE -> R.drawable.user_avatar_green_layout
             else -> R.drawable.user_avatar_grey_layout
@@ -29,6 +30,14 @@ class ChatsAdapter(private val dataSet: List<Chat>) : RecyclerView.Adapter<Chats
         holder.profileUsername.text = item.profileUsername
         holder.lastMessage.text = item.lastMessage
         Picasso.get().load(item.profileImage).fit().centerCrop().into(holder.profileImage)
+
+        holder.chatView.setOnClickListener {
+            val intent = Intent(holder.chatView.context, MessengerActivity::class.java)
+            intent.putExtra("login", item.profileLogin)
+            intent.putExtra("username", item.profileUsername)
+            intent.putExtra("profile_image", item.profileImage)
+            it.context.startActivity(intent)
+        }
     }
 
     override fun getItemCount(): Int = dataSet.size

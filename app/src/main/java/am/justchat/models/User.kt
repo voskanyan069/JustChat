@@ -2,7 +2,7 @@ package am.justchat.models
 
 import com.google.gson.annotations.SerializedName
 
-class User (
+data class User (
     @SerializedName("login")
     var login: String,
 

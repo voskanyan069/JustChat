@@ -181,6 +181,7 @@ class ChatsFragment : Fragment() {
                         for (i in 0..chats.size().minus(1)) {
                             val chatJson: JsonObject = chats.get(i).asJsonObject
                             val chat = Chat(
+                                profileLogin = chatJson.get("login").asString,
                                 profileUsername = chatJson.get("username").asString,
                                 isOnline = when (chatJson.get("status").asString) {
                                     "online" -> OnlineState.ONLINE

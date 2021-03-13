@@ -14,9 +14,12 @@
     <color name="lightGreen">#00bc48</color>
     <color name="lightGrey">#717C80</color>
     <color name="middleGrey">#EBEBEC</color>
+    <color name="darkGrey">#2D3539</color>
     <color name="green">#43A047</color>
     <color name="grey">#3E5159</color>
     <color name="error">#ef233c</color>
+    <color name="appBarSubtitle">#C8E6C9</color>
+    <color name="messageTime">#C0C0C0</color>
 
     <color name="primary">#003049</color>
     <color name="primaryVariant">#002040</color>
@@ -32,4 +35,5 @@
     <color name="contactCall">#00bc48</color>
     <color name="contactChat">#3e5159</color>
     <color name="contactDelete">#ef233c</color>
+    <color name="menuItemColor">#ffffff</color>
 </resources>

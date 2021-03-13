@@ -11,7 +11,7 @@ import am.justchat.adapters.CallsAdapter
 import am.justchat.api.repos.CallsRepo
 import am.justchat.authentication.CurrentUser
 import am.justchat.models.Call
-import am.justchat.states.CallState
+import am.justchat.states.CallsState
 import android.content.Intent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -60,11 +60,11 @@ class CallsFragment : Fragment() {
                                 val callJson: JsonObject = calls.get(i).asJsonObject
                                 val thisCall = Call(
                                         profileUsername = callJson.get("username").asString,
-                                        callState = when (callJson.get("call_status").asString) {
-                                            "incoming" -> CallState.INCOMING
-                                            "outgoing" -> CallState.OUTGOING
-                                            "unanswered" -> CallState.UNANSWERED
-                                            else -> CallState.MISSED
+                                        callsState = when (callJson.get("call_status").asString) {
+                                            "incoming" -> CallsState.INCOMING
+                                            "outgoing" -> CallsState.OUTGOING
+                                            "unanswered" -> CallsState.UNANSWERED
+                                            else -> CallsState.MISSED
                                         },
                                         callTime = callJson.get("call_time").asString,
                                         profileImage = callJson.get("profile_image").asString

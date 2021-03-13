@@ -3,7 +3,7 @@ package am.justchat.adapters
 import am.justchat.R
 import am.justchat.holders.CallsViewHolder
 import am.justchat.models.Call
-import am.justchat.states.CallState
+import am.justchat.states.CallsState
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -19,11 +19,11 @@ class CallsAdapter(private val dataSet: List<Call>) : RecyclerView.Adapter<Calls
         holder.bind()
 
         val item = dataSet[position]
-        val callState = when(item.callState) {
-            CallState.INCOMING -> R.drawable.ic_phone_incoming
-            CallState.OUTGOING -> R.drawable.ic_phone_outgoing
-            CallState.MISSED -> R.drawable.ic_phone_missed
-            CallState.UNANSWERED -> R.drawable.ic_phone_unanswered
+        val callState = when(item.callsState) {
+            CallsState.INCOMING -> R.drawable.ic_phone_incoming
+            CallsState.OUTGOING -> R.drawable.ic_phone_outgoing
+            CallsState.MISSED -> R.drawable.ic_phone_missed
+            CallsState.UNANSWERED -> R.drawable.ic_phone_unanswered
         }
 
         holder.profileUsername.text = item.profileUsername

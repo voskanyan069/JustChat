@@ -33,4 +33,7 @@
     <string name="not_allowed_login">Not allowed login</string>
     <string name="log_in">Log in</string>
     <string name="login_not_detected">No such login was detected</string>
+    <string name="delete_chat">Delete chat</string>
+    <string name="clear_history">Clear history</string>
+    <string name="message">Message...</string>
 </resources>
