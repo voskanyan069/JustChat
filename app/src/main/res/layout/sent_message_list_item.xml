@@ -27,13 +27,10 @@
                 android:text="@string/messages"
                 style="@style/Theme.JustChat.Chat.TextView.Message.Text" />
 
+            <TextView
+                android:id="@+id/sent_message_time"
+                android:textColor="@color/messageTimeSent"
+                style="@style/Theme.JustChat.Chat.TextView.Message.Time" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
-
-    <TextView
-        android:id="@+id/sent_message_time"
-        app:layout_constraintBottom_toBottomOf="@+id/sent_message_card"
-        app:layout_constraintEnd_toStartOf="@+id/sent_message_card"
-        style="@style/Theme.JustChat.Chat.TextView.Message.Time" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

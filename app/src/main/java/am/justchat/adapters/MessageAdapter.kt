@@ -36,7 +36,6 @@ class MessageAdapter(private val dataSet: List<Message>) : RecyclerView.Adapter<
         val item = dataSet[position]
         val simpleDateFormat = SimpleDateFormat("HH:mm")
         val dateTime: String = simpleDateFormat.format(item.time * 1000L)
-        Log.d("mTag", "HOLDER CLASS - ${holder::class}")
         try {
             if (item.viewType == MessageSenderState.SENT) {
                 (holder as SentMessageViewHolder).bind()

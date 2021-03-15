@@ -25,19 +25,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/app_bar"
-        android:layout_above="@id/input_container" />
+        android:layout_above="@id/input_container"
+        tools:listitem="@layout/received_message_list_item" />
 
     <LinearLayout
         android:id="@+id/input_container"
         android:layout_width="match_parent"
-        android:layout_height="60sp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:padding="7sp"
+        android:padding="10sp"
         android:orientation="horizontal"
         android:weightSum="2">
 
         <EditText
             android:id="@+id/message_input"
+            android:minHeight="50sp"
+            android:maxHeight="80sp"
             style="@style/Theme.JustChat.Chat.EditText.Message" />
 
         <ImageView

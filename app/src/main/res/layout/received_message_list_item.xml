@@ -45,13 +45,10 @@
                 android:text="@string/messages"
                 style="@style/Theme.JustChat.Chat.TextView.Message.Text" />
 
+            <TextView
+                android:id="@+id/rec_message_time"
+                android:textColor="@color/messageTimeReceived"
+                style="@style/Theme.JustChat.Chat.TextView.Message.Time" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
-
-    <TextView
-        android:id="@+id/rec_message_time"
-        app:layout_constraintBottom_toBottomOf="@+id/rec_message_card"
-        app:layout_constraintStart_toEndOf="@+id/rec_message_card"
-        style="@style/Theme.JustChat.Chat.TextView.Message.Time" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
