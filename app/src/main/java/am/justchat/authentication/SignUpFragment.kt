@@ -41,8 +41,8 @@ class SignUpFragment : Fragment() {
     private lateinit var signUpButton: Button
     private lateinit var logInText: TextView
     private lateinit var progressDialog: ProgressDialog
-    private lateinit var usersRepo: UsersRepo
     private lateinit var editorPreference: SharedPreferences.Editor
+    private val usersRepo = UsersRepo.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +60,6 @@ class SignUpFragment : Fragment() {
         signUpButton = root.findViewById(R.id.sign_up_submit_btn)
         logInText = root.findViewById(R.id.log_in_text)
 
-        usersRepo = UsersRepo.getInstance()
         progressDialog = ProgressDialog(context!!)
         progressDialog.setTitle("Loading...")
         progressDialog.setMessage("Please wait until loading end.")
@@ -162,6 +161,7 @@ class SignUpFragment : Fragment() {
                                         }
                                     } catch (e: Exception) {
                                         errorMessage.text = e.message
+                                        Log.d("mTag", "Sign up error", e)
                                     }
                                     cancelProgressDialog()
                                 }

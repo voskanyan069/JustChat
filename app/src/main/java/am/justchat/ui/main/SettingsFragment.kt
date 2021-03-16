@@ -11,6 +11,7 @@ import am.justchat.api.repos.UsersRepo
 import am.justchat.authentication.CurrentUser
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.util.Log
 import android.widget.TextView
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.gson.Gson
@@ -29,6 +30,7 @@ class SettingsFragment : Fragment() {
     private lateinit var profileUsername: TextView
     private lateinit var logOutText: TextView
     private lateinit var notificationSwitcher: SwitchMaterial
+    private val usersRepo = UsersRepo.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,10 +52,9 @@ class SettingsFragment : Fragment() {
     }
 
     private fun getUser() {
-        val usersRepo = UsersRepo.getInstance()
-        usersRepo.usersService
-            ?.getUser(CurrentUser.login.toString())
-            ?.enqueue(object : Callback<JsonObject> {
+        usersRepo.usersService!!
+            .getUser(CurrentUser.login.toString())
+            .enqueue(object : Callback<JsonObject> {
                 @SuppressLint("SetTextI18n")
                 override fun onResponse(
                     call: Call<JsonObject>,
@@ -75,7 +76,9 @@ class SettingsFragment : Fragment() {
                     }
                 }
 
-                override fun onFailure(call: Call<JsonObject>, t: Throwable) {}
+                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                    Log.e("mTag", "Fetch error", t)
+                }
             })
     }
 

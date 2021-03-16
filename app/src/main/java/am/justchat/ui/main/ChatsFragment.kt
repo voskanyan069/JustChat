@@ -32,6 +32,8 @@ class ChatsFragment : Fragment() {
     private lateinit var chatsList: RecyclerView
     private lateinit var sharedPreference: SharedPreferences
     private val storiesRepo = StoriesRepo.getInstance()
+    private val contactsRepo = ContactsRepo.getInstance()
+    private val chatsRepo = ChatsRepo.getInstance()
     private val jsonParser = JsonParser()
     private var login: String = "null"
     private val chatsArrayList = arrayListOf<Chat>()
@@ -59,9 +61,9 @@ class ChatsFragment : Fragment() {
             login = sharedPreference.getString("login", null).toString()
         }
 
-        storiesRepo.storiesService
-            ?.getUserStories(login)
-            ?.enqueue(object : Callback<JsonObject> {
+        storiesRepo.storiesService!!
+            .getUserStories(login)
+            .enqueue(object : Callback<JsonObject> {
                 override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                     val storiesJsonStr = Gson().toJson(response.body())
                     val storiesJson: JsonObject = jsonParser.parse(storiesJsonStr).asJsonObject
@@ -96,15 +98,16 @@ class ChatsFragment : Fragment() {
                     }
                 }
 
-                override fun onFailure(call: Call<JsonObject>, t: Throwable) {}
+                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                    Log.e("mTag", "Fetch error", t)
+                }
             })
     }
 
     private fun getContactsStoriesList() {
-        val contactsRepo = ContactsRepo.getInstance()
-        contactsRepo.contactsService
-            ?.getUserContacts(login)
-            ?.enqueue(object : Callback<JsonObject> {
+        contactsRepo.contactsService!!
+            .getUserContacts(login)
+            .enqueue(object : Callback<JsonObject> {
                 override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                     val contactsJsonStr = Gson().toJson(response.body())
                     val contactsJson: JsonObject = jsonParser.parse(contactsJsonStr).asJsonObject
@@ -143,16 +146,17 @@ class ChatsFragment : Fragment() {
                                         }
 
                                         override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                                            Log.d("mTag", "ON GET STORY FAIL", t)
+                                            Log.e("mTag", "Fetch error", t)
                                         }
                                     })
                         }
-                        Log.d("mTag", "FILL STORIES ARRAY LIST")
                         fillStoriesList(storiesArrayList)
                     }
                 }
 
-                override fun onFailure(call: Call<JsonObject>, t: Throwable) {}
+                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                    Log.e("mTag", "Fetch error", t)
+                }
             })
     }
 
@@ -161,10 +165,9 @@ class ChatsFragment : Fragment() {
             login = sharedPreference.getString("login", null).toString()
         }
 
-        val chatsRepo = ChatsRepo.getInstance()
-        chatsRepo.chatsService
-            ?.getUserChats(login)
-            ?.enqueue(object : Callback<JsonObject> {
+        chatsRepo.chatsService!!
+            .getUserChats(login)
+            .enqueue(object : Callback<JsonObject> {
                 override fun onResponse(
                     call: Call<JsonObject>,
                     response: Response<JsonObject>
@@ -196,7 +199,9 @@ class ChatsFragment : Fragment() {
                     }
                 }
 
-                override fun onFailure(call: Call<JsonObject>, t: Throwable) {}
+                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                    Log.e("mTag", "Fetch error", t)
+                }
             })
     }
 

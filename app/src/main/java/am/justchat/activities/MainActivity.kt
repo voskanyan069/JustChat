@@ -1,9 +1,11 @@
 package am.justchat.activities
 
 import am.justchat.R
+import am.justchat.api.repos.StatusRepo
 import am.justchat.api.repos.UsersRepo
 import am.justchat.authentication.CurrentUser
 import am.justchat.fragments.SwitchFragment
+import am.justchat.models.Status
 import am.justchat.storage.SharedPreference
 import am.justchat.ui.main.CallsFragment
 import am.justchat.ui.main.ChatsFragment
@@ -27,6 +29,8 @@ import java.lang.Exception
 class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavigationMenu: BottomNavigationView
     private lateinit var sharedPreference: SharedPreferences
+    private val statusRepo = StatusRepo.getInstance()
+    private val usersRepo = UsersRepo.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,14 +52,12 @@ class MainActivity : AppCompatActivity() {
         sharedPreference = SharedPreference.getInstance(this).sharedPreferences
 
         val isAuth = sharedPreference.getBoolean("is_authenticated", false)
-        Log.d("Authenticated", "$isAuth")
         if (!isAuth) {
-            Log.d("UserError", "Not find user")
             moveToSignUp()
         } else {
             val login = sharedPreference.getString("login", null)
             val username = sharedPreference.getString("username", null)
-            val usersRepo = UsersRepo()
+            updateStatus("online")
 
             if (login != null) {
                 usersRepo.usersService!!
@@ -83,7 +85,7 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                            Log.e("Retrofit", "Fetch error", t)
+                            Log.e("mTag", "Fetch error", t)
                         }
                     })
             }
@@ -103,9 +105,47 @@ class MainActivity : AppCompatActivity() {
                 true
             }
 
+    private fun updateStatus(status: String) {
+        statusRepo.statusService!!
+                .updateStatus(
+                        Status(
+                                login = CurrentUser.login.toString(),
+                                newStatus = status
+                        )
+                ).enqueue(object : Callback<JsonObject> {
+                    override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                        Log.d("mTag", "Status updated")
+                    }
+
+                    override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                        Log.e("mTag", "Fetch error", t)
+                    }
+                })
+    }
+
     private fun moveToSignUp() {
         val intent = Intent(this, AuthenticationActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        updateStatus("offline")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        updateStatus("offline")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateStatus("online")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        updateStatus("online")
     }
 }

@@ -34,8 +34,8 @@ class LogInFragment : Fragment() {
     private lateinit var logInButton: Button
     private lateinit var createAccountText: TextView
     private lateinit var progressDialog: ProgressDialog
-    private lateinit var usersRepo: UsersRepo
     private lateinit var editorPreference: SharedPreferences.Editor
+    private val usersRepo = UsersRepo.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +52,6 @@ class LogInFragment : Fragment() {
         logInButton = root.findViewById(R.id.log_in_submit_btn)
         createAccountText = root.findViewById(R.id.create_account_text)
 
-        usersRepo = UsersRepo.getInstance()
         progressDialog = ProgressDialog(context!!)
         progressDialog.setTitle("Loading...")
         progressDialog.setMessage("Please wait until loading end.")
@@ -95,9 +94,9 @@ class LogInFragment : Fragment() {
                     getString(R.string.password_max_ken)
                 else -> {
                     progressDialog.show()
-                    usersRepo.usersService
-                        ?.getUser(loginInput.text.toString())
-                        ?.enqueue(object : Callback<JsonObject> {
+                    usersRepo.usersService!!
+                        .getUser(loginInput.text.toString())
+                        .enqueue(object : Callback<JsonObject> {
                             override fun onResponse(
                                 call: Call<JsonObject>,
                                 response: Response<JsonObject>

@@ -13,6 +13,7 @@ import am.justchat.authentication.CurrentUser
 import am.justchat.models.Contact
 import am.justchat.states.OnlineState
 import android.content.Intent
+import android.util.Log
 import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +25,7 @@ import retrofit2.Response
 class ContactsFragment : Fragment() {
     private lateinit var addContactButton: ImageView
     private val contactsArrayList = arrayListOf<Contact>()
+    private val contactsRepo = ContactsRepo.getInstance()
 
     companion object {
         private lateinit var contactsList: RecyclerView
@@ -49,7 +51,6 @@ class ContactsFragment : Fragment() {
     }
 
     private fun getContactsList() {
-        val contactsRepo = ContactsRepo.getInstance()
         contactsRepo.contactsService!!
                 .getUserContacts(CurrentUser.login!!)
                 .enqueue(object : Callback<JsonObject> {
@@ -83,7 +84,9 @@ class ContactsFragment : Fragment() {
                         }
                     }
 
-                    override fun onFailure(call: Call<JsonObject>, t: Throwable) {}
+                    override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                        Log.e("mTag", "Fetch error", t)
+                    }
                 })
     }
 

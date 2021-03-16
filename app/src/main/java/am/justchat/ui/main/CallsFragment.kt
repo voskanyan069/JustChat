@@ -13,6 +13,7 @@ import am.justchat.authentication.CurrentUser
 import am.justchat.models.Call
 import am.justchat.states.CallsState
 import android.content.Intent
+import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -23,6 +24,7 @@ import retrofit2.Response
 
 class CallsFragment : Fragment() {
     private lateinit var callsList: RecyclerView
+    private val callsRepo = CallsRepo.getInstance()
     private val callsArrayList = arrayListOf<Call>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -38,10 +40,9 @@ class CallsFragment : Fragment() {
 
     private fun getCallsList() {
         if (CurrentUser.login != "null") {
-            val callsRepo = CallsRepo.getInstance()
-            callsRepo.callsService
-                ?.getUserCalls(CurrentUser.login.toString())
-                ?.enqueue(object : Callback<JsonObject> {
+            callsRepo.callsService!!
+                .getUserCalls(CurrentUser.login.toString())
+                .enqueue(object : Callback<JsonObject> {
                     override fun onResponse(
                         call: retrofit2.Call<JsonObject>,
                         response: Response<JsonObject>
@@ -75,7 +76,9 @@ class CallsFragment : Fragment() {
                         }
                     }
 
-                    override fun onFailure(call: retrofit2.Call<JsonObject>, t: Throwable) {}
+                    override fun onFailure(call: retrofit2.Call<JsonObject>, t: Throwable) {
+                        Log.e("mTag", "Fetch error", t)
+                    }
                 })
         }
     }

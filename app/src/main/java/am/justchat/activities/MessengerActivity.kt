@@ -3,16 +3,16 @@ package am.justchat.activities
 import am.justchat.R
 import am.justchat.adapters.MessageAdapter
 import am.justchat.api.repos.MessagesRepo
-import am.justchat.api.repos.UsersRepo
+import am.justchat.api.repos.StatusRepo
 import am.justchat.authentication.CurrentUser
 import am.justchat.models.Message
 import am.justchat.models.MessageUser
 import am.justchat.models.ServerMessage
+import am.justchat.models.Status
 import am.justchat.states.MessageSenderState
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
 import android.util.Log
 import android.widget.EditText
 import android.widget.ImageView
@@ -33,8 +33,8 @@ class MessengerActivity : AppCompatActivity() {
     private lateinit var messagesList: RecyclerView
     private lateinit var messageInput: EditText
     private lateinit var messageSendButton: ImageView
-    private lateinit var usersRepo: UsersRepo
-    private lateinit var messagesRepo: MessagesRepo
+    private val statusRepo = StatusRepo.getInstance()
+    private val messagesRepo = MessagesRepo.getInstance()
     private val messagesArrayList = arrayListOf<Message>()
     private val jsonParser = JsonParser()
     private var login: String? = null
@@ -47,6 +47,7 @@ class MessengerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_messenger)
 
+        updateStatus("online")
         login = intent.getStringExtra("login")
         username = intent.getStringExtra("username")
         profileImage = intent.getStringExtra("profile_image")
@@ -56,33 +57,43 @@ class MessengerActivity : AppCompatActivity() {
         messagesList.adapter = MessageAdapter(messagesArrayList)
         messageInput = findViewById(R.id.message_input)
         messageSendButton = findViewById(R.id.message_send)
-        usersRepo = UsersRepo.getInstance()
-        messagesRepo = MessagesRepo.getInstance()
         isActivityActive = true
 
         if (login != null && profileImage != null) {
-            getUser()
             messagesListener()
             sendMessage()
         }
     }
 
-    private fun getUser() {
-        usersRepo.usersService!!
-            .getUser(login!!)
+    private fun messagesListener(): Job {
+        return CoroutineScope(Dispatchers.Main).launch {
+            while (isActivityActive) {
+                Log.d("mTag", "Messages get request sent")
+                Log.d("mTag", "Status get request sent")
+                getStatus()
+                getMessages()
+                updateMessages()
+                delay(1000L)
+            }
+        }
+    }
+
+    private fun getStatus() {
+        statusRepo.statusService!!
+            .getStatus(login.toString())
             .enqueue(object : Callback<JsonObject> {
                 override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                    val userJsonStr = Gson().toJson(response.body())
-                    val userJson = jsonParser.parse(userJsonStr).asJsonObject
+                    val statusJsonStr = Gson().toJson(response.body())
+                    val statusJson = jsonParser.parse(statusJsonStr).asJsonObject
                     try {
-                        val code: Int = userJson.get("code").asInt
+                        val code: Int = statusJson.get("code").asInt
                         if (code == 1) {
                             moveToSignUp()
                         }
                     } catch (e: Exception) {
-                        val user = userJson.get("user").asJsonObject
-                        appToolbar.title = user.get("username").asString
-                        appToolbar.subtitle = user.get("status").asString.replace('o', 'O')
+                        val status = statusJson.get("status").asString
+                        appToolbar.title = username.toString()
+                        appToolbar.subtitle = status.replace('o', 'O')
                         appToolbar.setNavigationOnClickListener {
                             finish()
                         }
@@ -93,17 +104,6 @@ class MessengerActivity : AppCompatActivity() {
                     Log.e("mTag", "Fetch Error", t)
                 }
             })
-    }
-
-    private fun messagesListener(): Job {
-        return CoroutineScope(Dispatchers.Main).launch {
-            while (isActivityActive) {
-                Log.d("mTag", "Messages get request sent")
-                getMessages()
-                updateMessages()
-                delay(2000L)
-            }
-        }
     }
 
     private fun getMessages() {
@@ -138,7 +138,7 @@ class MessengerActivity : AppCompatActivity() {
                                 messagesArrayList.add(thisMessage)
                             }
                         } catch (e: Exception) {
-                            Log.e("mTag", "Error on message fetch", e)
+                            Log.e("mTag", "Message get error", e)
                         }
                     }
 
@@ -170,7 +170,7 @@ class MessengerActivity : AppCompatActivity() {
                                             messageInput.text.clear()
                                         }
                                     } catch (e: Exception) {
-                                        Log.d("mTag", "Message send error", e)
+                                        Log.d("mTag", "Message sent error", e)
                                     }
                                 }
 
@@ -181,6 +181,24 @@ class MessengerActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun updateStatus(status: String) {
+        statusRepo.statusService!!
+                .updateStatus(
+                        Status(
+                            login = CurrentUser.login.toString(),
+                            newStatus = status
+                        )
+                ).enqueue(object : Callback<JsonObject> {
+                    override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                        Log.d("mTag", "Status updated")
+                    }
+
+                    override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                        Log.e("mTag", "Fetch error", t)
+                    }
+                })
     }
 
     private fun updateMessages() {
@@ -197,20 +215,24 @@ class MessengerActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         isActivityActive = false
+        updateStatus("offline")
     }
 
     override fun onStop() {
         super.onStop()
         isActivityActive = false
+        updateStatus("offline")
     }
 
     override fun onResume() {
         super.onResume()
         isActivityActive = true
+        updateStatus("online")
     }
 
     override fun onStart() {
         super.onStart()
         isActivityActive = true
+        updateStatus("online")
     }
 }
