@@ -21,6 +21,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -31,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sharedPreference: SharedPreferences
     private val statusRepo = StatusRepo.getInstance()
     private val usersRepo = UsersRepo.getInstance()
+    private var isActivityActive = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,6 +83,8 @@ class MainActivity : AppCompatActivity() {
                                 CurrentUser.profileImage = userJson
                                     .get("user").asJsonObject
                                     .get("profile_image").asString
+                                isActivityActive = true
+                                requestsTask()
                             }
                         }
 
@@ -88,6 +92,15 @@ class MainActivity : AppCompatActivity() {
                             Log.e("mTag", "Fetch error", t)
                         }
                     })
+            }
+        }
+    }
+
+    private fun requestsTask(): Job {
+        return CoroutineScope(Dispatchers.Main).launch {
+            while (isActivityActive) {
+                updateStatus("online")
+                delay(10000L)
             }
         }
     }
@@ -114,7 +127,7 @@ class MainActivity : AppCompatActivity() {
                         )
                 ).enqueue(object : Callback<JsonObject> {
                     override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                        Log.d("mTag", "Status updated")
+                        Log.d("mTag", "Status updated - $status")
                     }
 
                     override fun onFailure(call: Call<JsonObject>, t: Throwable) {
@@ -131,21 +144,19 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        isActivityActive = false
         updateStatus("offline")
     }
 
     override fun onStop() {
         super.onStop()
+        isActivityActive = false
         updateStatus("offline")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        updateStatus("online")
     }
 
     override fun onStart() {
         super.onStart()
+        isActivityActive = true
         updateStatus("online")
     }
 }

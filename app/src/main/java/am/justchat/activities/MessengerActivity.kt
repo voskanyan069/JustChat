@@ -19,6 +19,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -59,13 +60,11 @@ class MessengerActivity : AppCompatActivity() {
         messageSendButton = findViewById(R.id.message_send)
         isActivityActive = true
 
-        if (login != null && profileImage != null) {
-            messagesListener()
-            sendMessage()
-        }
+        requestsTask()
+        sendMessage()
     }
 
-    private fun messagesListener(): Job {
+    private fun requestsTask(): Job {
         return CoroutineScope(Dispatchers.Main).launch {
             while (isActivityActive) {
                 Log.d("mTag", "Messages get request sent")
@@ -73,6 +72,7 @@ class MessengerActivity : AppCompatActivity() {
                 getStatus()
                 getMessages()
                 updateMessages()
+                updateStatus("online")
                 delay(1000L)
             }
         }
@@ -175,6 +175,7 @@ class MessengerActivity : AppCompatActivity() {
                                 }
 
                                 override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                                    Snackbar.make(messageSendButton, t.message.toString(), Snackbar.LENGTH_SHORT).show()
                                     Log.e("mTag", "Fetch error", t)
                                 }
                             })
@@ -192,7 +193,7 @@ class MessengerActivity : AppCompatActivity() {
                         )
                 ).enqueue(object : Callback<JsonObject> {
                     override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                        Log.d("mTag", "Status updated")
+                        Log.d("mTag", "Status updated - $status")
                     }
 
                     override fun onFailure(call: Call<JsonObject>, t: Throwable) {
@@ -222,12 +223,6 @@ class MessengerActivity : AppCompatActivity() {
         super.onStop()
         isActivityActive = false
         updateStatus("offline")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        isActivityActive = true
-        updateStatus("online")
     }
 
     override fun onStart() {

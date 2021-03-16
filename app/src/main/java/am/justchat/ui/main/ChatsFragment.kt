@@ -22,6 +22,7 @@ import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.*
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -38,16 +39,13 @@ class ChatsFragment : Fragment() {
     private var login: String = "null"
     private val chatsArrayList = arrayListOf<Chat>()
     private val storiesArrayList = arrayListOf<Story>()
+    private var isFragmentActive = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_chats, container, false)
 
         sharedPreference = SharedPreference.getInstance(context!!).sharedPreferences
-
-        getUserStoriesList()
-        getChatsList()
-
         storiesList = root.findViewById(R.id.stories_list)
         chatsList = root.findViewById(R.id.chats_list)
         storiesList.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.HORIZONTAL, false)
@@ -56,11 +54,25 @@ class ChatsFragment : Fragment() {
         return root
     }
 
+    private fun requestsTask(): Job {
+        return CoroutineScope(Dispatchers.Main).launch {
+            while (isFragmentActive) {
+                Log.d("mTag", "Sent stories get request")
+                getUserStoriesList()
+                for (i in 0..4) {
+                    Log.d("mTag", "Sent chats get request")
+                    getChatsList()
+                    delay(2000L)
+                }
+            }
+        }
+    }
+
     private fun getUserStoriesList() {
         if (login == "null") {
             login = sharedPreference.getString("login", null).toString()
         }
-
+        storiesArrayList.clear()
         storiesRepo.storiesService!!
             .getUserStories(login)
             .enqueue(object : Callback<JsonObject> {
@@ -76,24 +88,15 @@ class ChatsFragment : Fragment() {
                         val storyJson: JsonObject = storiesJson.getAsJsonObject("stories")
                         val storyMediaPathJson: JsonArray = storyJson.getAsJsonArray("media_path")
                         val storyMediaPath = arrayListOf<String>()
-                        if (storyMediaPathJson.size() == 0) {
-                            val story = Story(
-                                    profileUsername = storyJson.get("login").asString,
-                                    profileImage = storyJson.get("profile_image").asString,
-                                    mediaPath = arrayListOf()
-                            )
-                            storiesArrayList.add(story)
-                        } else {
-                            for (k in 0..storyMediaPathJson.size().minus(1)) {
-                                storyMediaPath.add(storyMediaPathJson.get(k).asString)
-                            }
-                            val story = Story(
-                                    profileUsername = storyJson.get("login").asString,
-                                    profileImage = storyJson.get("profile_image").asString,
-                                    mediaPath = storyMediaPath
-                            )
-                            storiesArrayList.add(story)
+                        for (k in 0..storyMediaPathJson.size().minus(1)) {
+                            storyMediaPath.add(storyMediaPathJson.get(k).asString)
                         }
+                        val story = Story(
+                                profileUsername = storyJson.get("login").asString,
+                                profileImage = storyJson.get("profile_image").asString,
+                                mediaPath = storyMediaPath
+                        )
+                        storiesArrayList.add(story)
                         getContactsStoriesList()
                     }
                 }
@@ -138,10 +141,9 @@ class ChatsFragment : Fragment() {
                                                         profileImage = storyJson.get("profile_image").asString,
                                                         mediaPath = storyMediaPath
                                                 )
-                                                Log.d("mTag", "STORY ADDED")
                                                 storiesArrayList.add(story)
-                                            } catch (ignored: Exception) {
-                                                Log.d("mTag", "ERROR WAS CATCH", ignored)
+                                            } catch (e: Exception) {
+                                                Log.d("mTag", "Story get error", e)
                                             }
                                         }
 
@@ -164,7 +166,7 @@ class ChatsFragment : Fragment() {
         if (login == "null") {
             login = sharedPreference.getString("login", null).toString()
         }
-
+        chatsArrayList.clear()
         chatsRepo.chatsService!!
             .getUserChats(login)
             .enqueue(object : Callback<JsonObject> {
@@ -219,5 +221,16 @@ class ChatsFragment : Fragment() {
         val intent = Intent(activity, AuthenticationActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        isFragmentActive = false
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isFragmentActive = true
+        requestsTask()
     }
 }
