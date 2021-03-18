@@ -73,7 +73,7 @@ class ContactsFragment : Fragment() {
             val submit: Button = messageBoxView.findViewById(R.id.add_contact_submit)
 
             submit.setOnClickListener {
-                loginInput.text = loginInput.text.trim() as Editable?
+                loginInput.text = loginInput.text.trim() as Editable
                 when {
                     loginInput.text.isBlank() -> errorMessage.text = getString(R.string.incorrect_login)
                     loginInput.text.length < 4 -> errorMessage.text = getString(R.string.login_min_len)

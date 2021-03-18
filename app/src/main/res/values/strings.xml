@@ -28,7 +28,7 @@
     <string name="username_min_len">Username minimal length is 4</string>
     <string name="username_max_len">Username maximal length is 16</string>
     <string name="password_min_len">Password minimal length is 6</string>
-    <string name="password_max_ken">Password maximum length is 16</string>
+    <string name="password_max_len">Password maximum length is 16</string>
     <string name="taken_login">The login was already taken</string>
     <string name="not_allowed_login">Not allowed login</string>
     <string name="log_in">Log in</string>
@@ -40,4 +40,10 @@
     <string name="not_find_contact">User with this login not find</string>
     <string name="some_login_contact">You can not add you to your contacts</string>
     <string name="contact_contains">This user was already on your contacts</string>
+    <string name="update_username">Update username</string>
+    <string name="profile">Profile</string>
+    <string name="update_password">Update password</string>
+    <string name="new_username">New username</string>
+    <string name="update">Update</string>
+    <string name="new_password">New password</string>
 </resources>

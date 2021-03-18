@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_box_layout"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/dialog_title"
+        style="@style/Theme.JustChat.TextView.PageTitle" />
+
+    <EditText
+        android:id="@+id/dialog_input"
+        style="@style/Theme.JustChat.EditText" />
+
+    <TextView
+        android:id="@+id/dialog_error_msg"
+        style="@style/Theme.JustChat.TextView.ErrorMessage" />
+
+    <Button
+        android:id="@+id/dialog_submit"
+        android:layout_marginBottom="20sp"
+        android:layout_gravity="center_horizontal"
+        style="@style/Theme.JustChat.Button" />
+
+</LinearLayout>

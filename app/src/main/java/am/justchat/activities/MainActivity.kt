@@ -4,7 +4,7 @@ import am.justchat.R
 import am.justchat.api.repos.StatusRepo
 import am.justchat.api.repos.UsersRepo
 import am.justchat.authentication.CurrentUser
-import am.justchat.fragments.SwitchFragment
+import am.justchat.states.SwitchFragment
 import am.justchat.models.Status
 import am.justchat.storage.SharedPreference
 import am.justchat.ui.main.CallsFragment

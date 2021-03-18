@@ -2,10 +2,9 @@ package am.justchat.activities
 
 import am.justchat.R
 import am.justchat.authentication.SignUpFragment
-import am.justchat.fragments.SwitchFragment
+import am.justchat.states.SwitchFragment
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 
 class AuthenticationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

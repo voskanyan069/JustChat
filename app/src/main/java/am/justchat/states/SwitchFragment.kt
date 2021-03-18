@@ -1,4 +1,4 @@
-package am.justchat.fragments
+package am.justchat.states
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment

@@ -8,8 +8,7 @@ import android.view.ViewGroup
 import am.justchat.R
 import am.justchat.activities.MainActivity
 import am.justchat.api.repos.UsersRepo
-import am.justchat.fragments.SwitchFragment
-import am.justchat.models.User
+import am.justchat.states.SwitchFragment
 import am.justchat.storage.SharedPreference
 import android.app.ProgressDialog
 import android.content.Intent
@@ -91,7 +90,7 @@ class LogInFragment : Fragment() {
                 passwordInput.text.length < 6 -> errorMessage.text =
                     getString(R.string.password_min_len)
                 passwordInput.text.length > 16 -> errorMessage.text =
-                    getString(R.string.password_max_ken)
+                    getString(R.string.password_max_len)
                 else -> {
                     progressDialog.show()
                     usersRepo.usersService!!

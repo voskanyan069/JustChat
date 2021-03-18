@@ -6,22 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import am.justchat.R
-import am.justchat.activities.AuthenticationActivity
 import am.justchat.activities.MainActivity
 import am.justchat.api.repos.UsersRepo
-import am.justchat.fragments.SwitchFragment
+import am.justchat.states.SwitchFragment
 import am.justchat.models.User
 import am.justchat.storage.SharedPreference
 import android.app.ProgressDialog
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.hardware.input.InputManager
 import android.text.Editable
 import android.util.Log
-import android.view.KeyEvent
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -77,8 +71,8 @@ class SignUpFragment : Fragment() {
 
     private fun signUp() {
         signUpButton.setOnClickListener {
-            loginInput.text = loginInput.text.trim() as Editable?
-            usernameInput.text = usernameInput.text.trim() as Editable?
+            loginInput.text = loginInput.text.trim() as Editable
+            usernameInput.text = usernameInput.text.trim() as Editable
             when {
                 loginInput.text.isBlank() -> errorMessage.text = getString(R.string.incorrect_login)
                 loginInput.text.length < 4 -> errorMessage.text = getString(R.string.login_min_len)
@@ -106,7 +100,7 @@ class SignUpFragment : Fragment() {
                 passwordInput.text.length < 6 -> errorMessage.text =
                     getString(R.string.password_min_len)
                 passwordInput.text.length > 16 -> errorMessage.text =
-                    getString(R.string.password_max_ken)
+                    getString(R.string.password_max_len)
                 else -> {
                     errorMessage.text = ""
                     progressDialog.show()
