@@ -21,6 +21,7 @@
     <color name="appBarSubtitle">#C8E6C9</color>
     <color name="messageTimeSent">#FFFEFE</color>
     <color name="messageTimeReceived">#575757</color>
+    <color name="dialogBox">#C8E6C9</color>
 
     <color name="primary">#003049</color>
     <color name="primaryVariant">#002040</color>

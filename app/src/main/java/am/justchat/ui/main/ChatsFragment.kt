@@ -9,6 +9,7 @@ import am.justchat.R
 import am.justchat.activities.AuthenticationActivity
 import am.justchat.adapters.ChatsAdapter
 import am.justchat.adapters.StoryAdapter
+import am.justchat.api.Config
 import am.justchat.api.repos.ChatsRepo
 import am.justchat.api.repos.ContactsRepo
 import am.justchat.api.repos.StoriesRepo
@@ -61,7 +62,7 @@ class ChatsFragment : Fragment() {
             for (i in 0..4) {
                 Log.d("mTag", "Sent chats get request")
                 getChatsList()
-                delay(2000L)
+                delay(Config.REQUESTS_DELAY)
             }
         }
     }

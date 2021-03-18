@@ -12,6 +12,9 @@ interface ContactsService {
     @GET("/get_contacts/{login}")
     fun getContacts(@Path(value = "login") login: String): Call<JsonObject>
 
+    @POST("/add_contact")
+    fun addContact(@Body contact: ServerContact): Call<JsonObject>
+
     @POST("/delete_contact")
     fun deleteContact(@Body contact: ServerContact): Call<JsonObject>
 }

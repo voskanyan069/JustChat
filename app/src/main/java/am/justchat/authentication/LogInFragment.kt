@@ -114,11 +114,8 @@ class LogInFragment : Fragment() {
                                 } catch (e: Exception) {
                                     val user: JsonObject = userJson.get("user").asJsonObject
                                     val password: String = user.get("password").asString
-                                    println("INPUT PASSWORD -> ${passwordInput.text}")
-                                    println("USER PASSWORD -> $password")
                                     when (password) {
                                         passwordInput.text.toString() -> {
-                                            println("PASSWORDS WAS EQUALS")
                                             errorMessage.text = ""
                                             val username: String = user.get("username").asString
                                             editorPreference.putBoolean(

@@ -8,15 +8,25 @@ import android.view.ViewGroup
 import am.justchat.R
 import am.justchat.activities.AuthenticationActivity
 import am.justchat.adapters.ContactsAdapter
+import am.justchat.api.Config
 import am.justchat.api.repos.ContactsRepo
 import am.justchat.authentication.CurrentUser
 import am.justchat.models.Contact
+import am.justchat.models.ServerContact
 import am.justchat.states.OnlineState
+import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.text.Editable
 import android.util.Log
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.*
 import kotlinx.coroutines.*
 import retrofit2.Call
@@ -39,6 +49,7 @@ class ContactsFragment : Fragment() {
         addContactButton = root.findViewById(R.id.add_contact_btn)
         contactsList = root.findViewById(R.id.contacts_list)
         contactsList.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.VERTICAL, false)
+        addContact()
 
         return root
     }
@@ -47,7 +58,76 @@ class ContactsFragment : Fragment() {
         while (isFragmentActive) {
             Log.d("mTag", "Sent contacts get request")
             getContactsList()
-            delay(2000L)
+            delay(Config.REQUESTS_DELAY)
+        }
+    }
+
+    private fun addContact() {
+        addContactButton.setOnClickListener {
+            val messageBoxView = LayoutInflater.from(activity).inflate(R.layout.add_contact_dialog, null)
+            val messageBoxBuilder = AlertDialog.Builder(activity).setView(messageBoxView)
+            messageBoxView.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            val messageBoxInstance = messageBoxBuilder.show()
+            val loginInput: EditText = messageBoxView.findViewById(R.id.add_contact_login)
+            val errorMessage: TextView = messageBoxView.findViewById(R.id.add_contact_error_msg)
+            val submit: Button = messageBoxView.findViewById(R.id.add_contact_submit)
+
+            submit.setOnClickListener {
+                loginInput.text = loginInput.text.trim() as Editable?
+                when {
+                    loginInput.text.isBlank() -> errorMessage.text = getString(R.string.incorrect_login)
+                    loginInput.text.length < 4 -> errorMessage.text = getString(R.string.login_min_len)
+                    loginInput.text.length > 16 -> errorMessage.text = getString(R.string.login_max_len)
+                    loginInput.text.contains("/") -> errorMessage.text =
+                            getString(R.string.not_allowed_login)
+                    loginInput.text.contains("?") -> errorMessage.text =
+                            getString(R.string.not_allowed_login)
+                    loginInput.text.contains("&") -> errorMessage.text =
+                            getString(R.string.not_allowed_login)
+                    loginInput.text.contains(".") -> errorMessage.text =
+                            getString(R.string.not_allowed_login)
+                    loginInput.text.contains(",") -> errorMessage.text =
+                            getString(R.string.not_allowed_login)
+                    loginInput.text.contains("null") -> errorMessage.text =
+                            getString(R.string.not_allowed_login)
+                    else -> {
+                        contactsRepo.contactsService!!
+                                .addContact(ServerContact(
+                                        login = CurrentUser.login.toString(),
+                                        contactLogin = loginInput.text.toString()
+                                )).enqueue(object : Callback<JsonObject> {
+                                    override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                                        val jsonParser = JsonParser()
+                                        val contactJsonStr = Gson().toJson(response.body())
+                                        val contactJson: JsonObject = jsonParser
+                                                .parse(contactJsonStr).asJsonObject
+                                        try {
+                                            when (contactJson.get("code").asInt) {
+                                                1 -> errorMessage.text = getString(R.string.not_find_contact)
+                                                3 -> errorMessage.text = getString(R.string.some_login_contact)
+                                                5 -> errorMessage.text = getString(R.string.contact_contains)
+                                            }
+                                        } catch (e: Exception) {
+                                            val isContactAdded = contactJson.get("contact_added").asBoolean
+                                            if (isContactAdded) {
+                                                errorMessage.text = ""
+                                                messageBoxInstance.dismiss()
+                                                Snackbar.make(
+                                                        addContactButton,
+                                                        "The contact was added",
+                                                        Snackbar.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        }
+                                    }
+
+                                    override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                                        Log.e("mTag", "Fetch error", t)
+                                    }
+                                })
+                    }
+                }
+            }
         }
     }
 

@@ -18,19 +18,19 @@
         <EditText
             android:id="@+id/sign_up_login_input"
             android:layout_below="@id/auth_background_image"
-            style="@style/Theme.JustChat.EditText.Authentication"
+            style="@style/Theme.JustChat.EditText"
             android:hint="@string/login" />
 
         <EditText
             android:id="@+id/sign_up_username_input"
             android:layout_below="@id/sign_up_login_input"
-            style="@style/Theme.JustChat.EditText.Authentication"
+            style="@style/Theme.JustChat.EditText"
             android:hint="@string/username" />
 
         <EditText
             android:id="@+id/sign_up_password_input"
             android:layout_below="@id/sign_up_username_input"
-            style="@style/Theme.JustChat.EditText.Authentication"
+            style="@style/Theme.JustChat.EditText"
             android:hint="@string/password"
             android:inputType="textPassword" />
 
@@ -42,7 +42,7 @@
         <Button
             android:id="@+id/sign_up_submit_btn"
             android:layout_below="@id/sign_up_error_msg"
-            style="@style/Theme.JustChat.Button.Authentication"
+            style="@style/Theme.JustChat.Button"
             android:text="@string/sign_up" />
 
         <TextView

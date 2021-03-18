@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import am.justchat.R
 import am.justchat.activities.AuthenticationActivity
 import am.justchat.adapters.CallsAdapter
+import am.justchat.api.Config
 import am.justchat.api.repos.CallsRepo
 import am.justchat.authentication.CurrentUser
 import am.justchat.models.Call
@@ -43,7 +44,7 @@ class CallsFragment : Fragment() {
         while (isFragmentActive) {
             Log.d("mTag", "Sent calls get request")
             getCallsList()
-            delay(2000L)
+            delay(Config.REQUESTS_DELAY)
         }
     }
 

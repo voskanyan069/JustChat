@@ -35,5 +35,9 @@
     <string name="login_not_detected">No such login was detected</string>
     <string name="delete_chat">Delete chat</string>
     <string name="clear_history">Clear history</string>
-    <string name="message">Message...</string>
+    <string name="message">Message…</string>
+    <string name="add_contact">Add contact</string>
+    <string name="not_find_contact">User with this login not find</string>
+    <string name="some_login_contact">You can not add you to your contacts</string>
+    <string name="contact_contains">This user was already on your contacts</string>
 </resources>

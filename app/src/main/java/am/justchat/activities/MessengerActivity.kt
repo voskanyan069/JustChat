@@ -2,6 +2,7 @@ package am.justchat.activities
 
 import am.justchat.R
 import am.justchat.adapters.MessageAdapter
+import am.justchat.api.Config
 import am.justchat.api.repos.MessagesRepo
 import am.justchat.api.repos.StatusRepo
 import am.justchat.authentication.CurrentUser
@@ -71,8 +72,8 @@ class MessengerActivity : AppCompatActivity() {
             getStatus()
             getMessages()
             updateMessages()
-            updateStatus("online")
-            delay(1000L)
+            // updateStatus("online")
+            delay(Config.REQUESTS_DELAY)
         }
     }
 

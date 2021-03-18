@@ -18,13 +18,13 @@
         <EditText
             android:id="@+id/log_in_login_input"
             android:layout_below="@id/auth_background_image"
-            style="@style/Theme.JustChat.EditText.Authentication"
+            style="@style/Theme.JustChat.EditText"
             android:hint="@string/login" />
 
         <EditText
             android:id="@+id/log_in_password_input"
             android:layout_below="@id/log_in_login_input"
-            style="@style/Theme.JustChat.EditText.Authentication"
+            style="@style/Theme.JustChat.EditText"
             android:hint="@string/password"
             android:inputType="textPassword" />
 
@@ -36,7 +36,7 @@
         <Button
             android:id="@+id/log_in_submit_btn"
             android:layout_below="@id/log_in_error_msg"
-            style="@style/Theme.JustChat.Button.Authentication"
+            style="@style/Theme.JustChat.Button"
             android:text="@string/log_in" />
 
         <TextView

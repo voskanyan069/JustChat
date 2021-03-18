@@ -108,7 +108,7 @@
         <item name="android:focusableInTouchMode">true</item>
     </style>
 
-    <style name="Theme.JustChat.EditText.Authentication" parent="ThemeOverlay.MaterialComponents">
+    <style name="Theme.JustChat.EditText" parent="ThemeOverlay.MaterialComponents">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">40sp</item>
         <item name="android:layout_marginTop">10sp</item>
@@ -123,7 +123,7 @@
         <item name="android:textColor">@color/grey</item>
     </style>
 
-    <style name="Theme.JustChat.Button.Authentication" parent="Widget.MaterialComponents.Button">
+    <style name="Theme.JustChat.Button" parent="Widget.MaterialComponents.Button">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingLeft">50sp</item>
