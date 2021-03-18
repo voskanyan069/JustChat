@@ -107,7 +107,7 @@ class ChatsFragment : Fragment() {
 
     private fun getContactsStoriesList() {
         contactsRepo.contactsService!!
-            .getUserContacts(login)
+            .getContacts(login)
             .enqueue(object : Callback<JsonObject> {
                 override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                     val contactsJsonStr = Gson().toJson(response.body())

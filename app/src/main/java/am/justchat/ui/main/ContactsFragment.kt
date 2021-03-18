@@ -25,17 +25,10 @@ import retrofit2.Response
 
 class ContactsFragment : Fragment() {
     private lateinit var addContactButton: ImageView
+    private lateinit var contactsList: RecyclerView
     private val contactsArrayList = arrayListOf<Contact>()
     private val contactsRepo = ContactsRepo.getInstance()
     private var isFragmentActive = true
-
-    companion object {
-        private lateinit var contactsList: RecyclerView
-
-        fun contactDeleted(index: Int) {
-            contactsList.adapter?.notifyItemRemoved(index)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,7 +54,7 @@ class ContactsFragment : Fragment() {
     private fun getContactsList() {
         contactsArrayList.clear()
         contactsRepo.contactsService!!
-                .getUserContacts(CurrentUser.login!!)
+                .getContacts(CurrentUser.login!!)
                 .enqueue(object : Callback<JsonObject> {
                     override fun onResponse(
                             call: Call<JsonObject>,
@@ -81,6 +74,7 @@ class ContactsFragment : Fragment() {
                             for (i in 0..contacts.size().minus(1)) {
                                 val contactJson: JsonObject = contacts.get(i).asJsonObject
                                 val cont = Contact(
+                                        profileLogin = contactJson.get("login").asString,
                                         profileUsername = contactJson.get("username").asString,
                                         profileOnlineState = when (contactJson.get("status").asString) {
                                             "online" -> OnlineState.ONLINE
