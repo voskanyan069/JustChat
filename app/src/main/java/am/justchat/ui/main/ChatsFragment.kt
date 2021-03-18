@@ -54,16 +54,14 @@ class ChatsFragment : Fragment() {
         return root
     }
 
-    private fun requestsTask(): Job {
-        return CoroutineScope(Dispatchers.Main).launch {
-            while (isFragmentActive) {
-                Log.d("mTag", "Sent stories get request")
-                getUserStoriesList()
-                for (i in 0..4) {
-                    Log.d("mTag", "Sent chats get request")
-                    getChatsList()
-                    delay(2000L)
-                }
+    private fun requestsTask(): Job = CoroutineScope(Dispatchers.Main).launch {
+        while (isFragmentActive) {
+            Log.d("mTag", "Sent stories get request")
+            getUserStoriesList()
+            for (i in 0..4) {
+                Log.d("mTag", "Sent chats get request")
+                getChatsList()
+                delay(2000L)
             }
         }
     }
@@ -182,22 +180,26 @@ class ChatsFragment : Fragment() {
                             moveToSignUp()
                         }
                     } catch (e: Exception) {
-                        val chats: JsonArray = chatsJson.getAsJsonArray("chats")
-                        for (i in 0..chats.size().minus(1)) {
-                            val chatJson: JsonObject = chats.get(i).asJsonObject
-                            val chat = Chat(
-                                profileLogin = chatJson.get("login").asString,
-                                profileUsername = chatJson.get("username").asString,
-                                isOnline = when (chatJson.get("status").asString) {
-                                    "online" -> OnlineState.ONLINE
-                                    else -> OnlineState.OFFLINE
-                                },
-                                lastMessage = chatJson.get("last_msg").asString,
-                                profileImage = chatJson.get("profile_image").asString
-                            )
-                            chatsArrayList.add(chat)
+                        try {
+                            val chats: JsonArray = chatsJson.getAsJsonArray("chats")
+                            for (i in 0..chats.size().minus(1)) {
+                                val chatJson: JsonObject = chats.get(i).asJsonObject
+                                val chat = Chat(
+                                        profileLogin = chatJson.get("login").asString,
+                                        profileUsername = chatJson.get("username").asString,
+                                        isOnline = when (chatJson.get("status").asString) {
+                                            "online" -> OnlineState.ONLINE
+                                            else -> OnlineState.OFFLINE
+                                        },
+                                        lastMessage = chatJson.get("last_msg").asString,
+                                        profileImage = chatJson.get("profile_image").asString
+                                )
+                                chatsArrayList.add(chat)
+                            }
+                            fillChatsList(chatsArrayList)
+                        } catch (n: NullPointerException) {
+                            Log.e("mTag", "Null chats json array", n)
                         }
-                        fillChatsList(chatsArrayList)
                     }
                 }
 

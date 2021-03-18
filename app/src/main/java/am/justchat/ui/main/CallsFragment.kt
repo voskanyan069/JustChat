@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import kotlinx.coroutines.*
 import retrofit2.Callback
 import retrofit2.Response
 
@@ -26,20 +27,29 @@ class CallsFragment : Fragment() {
     private lateinit var callsList: RecyclerView
     private val callsRepo = CallsRepo.getInstance()
     private val callsArrayList = arrayListOf<Call>()
+    private var isFragmentActive = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_calls, container, false)
 
-        getCallsList()
         callsList = root.findViewById(R.id.calls_list)
         callsList.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.VERTICAL, false)
 
         return root
     }
 
+    private fun requestsTask(): Job = CoroutineScope(Dispatchers.Main).launch {
+        while (isFragmentActive) {
+            Log.d("mTag", "Sent calls get request")
+            getCallsList()
+            delay(2000L)
+        }
+    }
+
     private fun getCallsList() {
         if (CurrentUser.login != "null") {
+            callsArrayList.clear()
             callsRepo.callsService!!
                 .getUserCalls(CurrentUser.login.toString())
                 .enqueue(object : Callback<JsonObject> {
@@ -91,5 +101,16 @@ class CallsFragment : Fragment() {
         val intent = Intent(context, AuthenticationActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        isFragmentActive = false
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isFragmentActive = true
+        requestsTask()
     }
 }

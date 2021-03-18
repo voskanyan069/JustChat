@@ -64,17 +64,15 @@ class MessengerActivity : AppCompatActivity() {
         sendMessage()
     }
 
-    private fun requestsTask(): Job {
-        return CoroutineScope(Dispatchers.Main).launch {
-            while (isActivityActive) {
-                Log.d("mTag", "Messages get request sent")
-                Log.d("mTag", "Status get request sent")
-                getStatus()
-                getMessages()
-                updateMessages()
-                updateStatus("online")
-                delay(1000L)
-            }
+    private fun requestsTask(): Job = CoroutineScope(Dispatchers.Main).launch {
+        while (isActivityActive) {
+            Log.d("mTag", "Messages get request sent")
+            Log.d("mTag", "Status get request sent")
+            getStatus()
+            getMessages()
+            updateMessages()
+            updateStatus("online")
+            delay(1000L)
         }
     }
 

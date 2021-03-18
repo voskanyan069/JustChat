@@ -18,6 +18,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.*
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -26,6 +27,7 @@ class ContactsFragment : Fragment() {
     private lateinit var addContactButton: ImageView
     private val contactsArrayList = arrayListOf<Contact>()
     private val contactsRepo = ContactsRepo.getInstance()
+    private var isFragmentActive = true
 
     companion object {
         private lateinit var contactsList: RecyclerView
@@ -41,8 +43,6 @@ class ContactsFragment : Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_contacts, container, false)
 
-        getContactsList()
-
         addContactButton = root.findViewById(R.id.add_contact_btn)
         contactsList = root.findViewById(R.id.contacts_list)
         contactsList.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.VERTICAL, false)
@@ -50,7 +50,16 @@ class ContactsFragment : Fragment() {
         return root
     }
 
+    private fun requestsTask(): Job = CoroutineScope(Dispatchers.Main).launch {
+        while (isFragmentActive) {
+            Log.d("mTag", "Sent contacts get request")
+            getContactsList()
+            delay(2000L)
+        }
+    }
+
     private fun getContactsList() {
+        contactsArrayList.clear()
         contactsRepo.contactsService!!
                 .getUserContacts(CurrentUser.login!!)
                 .enqueue(object : Callback<JsonObject> {
@@ -98,5 +107,16 @@ class ContactsFragment : Fragment() {
         val intent = Intent(activity, AuthenticationActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        isFragmentActive = false
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isFragmentActive = true
+        requestsTask()
     }
 }
