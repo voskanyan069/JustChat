@@ -17,7 +17,6 @@ import android.content.Intent
 import android.util.Log
 import android.widget.EditText
 import androidx.core.widget.doAfterTextChanged
-import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -41,9 +40,7 @@ class CallsFragment : Fragment() {
         searchBar = root.findViewById(R.id.calls_search_bar)
         callsList = root.findViewById(R.id.calls_list)
         callsList.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.VERTICAL, false)
-        searchBar.doAfterTextChanged {
-            getCallsList()
-        }
+        searchBar.doAfterTextChanged { getCallsList() }
 
         return root
     }

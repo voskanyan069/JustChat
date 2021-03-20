@@ -1,10 +1,5 @@
 package am.justchat.ui.main
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import am.justchat.R
 import am.justchat.activities.AuthenticationActivity
 import am.justchat.adapters.ChatsAdapter
@@ -17,11 +12,17 @@ import am.justchat.models.Chat
 import am.justchat.models.Story
 import am.justchat.states.OnlineState
 import am.justchat.storage.SharedPreference
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.*
@@ -29,8 +30,7 @@ import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.Exception
-import kotlin.math.log
+
 
 class ChatsFragment : Fragment() {
     private lateinit var searchBar: EditText
@@ -46,6 +46,7 @@ class ChatsFragment : Fragment() {
     private val storiesArrayList = arrayListOf<Story>()
     private var isFragmentActive = true
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_chats, container, false)
@@ -56,9 +57,7 @@ class ChatsFragment : Fragment() {
         chatsList = root.findViewById(R.id.chats_list)
         storiesList.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.HORIZONTAL, false)
         chatsList.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.VERTICAL, false)
-        searchBar.doAfterTextChanged {
-            getChatsList()
-        }
+        searchBar.doAfterTextChanged { getChatsList() }
 
         return root
     }
@@ -178,8 +177,8 @@ class ChatsFragment : Fragment() {
             .getUserChats(login = login, query = searchBar.text.toString())
             .enqueue(object : Callback<JsonObject> {
                 override fun onResponse(
-                    call: Call<JsonObject>,
-                    response: Response<JsonObject>
+                        call: Call<JsonObject>,
+                        response: Response<JsonObject>
                 ) {
                     val chatsJsonStr = Gson().toJson(response.body())
                     val chatsJson: JsonObject = jsonParser.parse(chatsJsonStr).asJsonObject

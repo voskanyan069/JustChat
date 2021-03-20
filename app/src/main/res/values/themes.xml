@@ -54,7 +54,7 @@
         <item name="android:paddingStart">15sp</item>
         <item name="android:paddingEnd">15sp</item>
         <item name="android:drawableStart">@drawable/ic_search</item>
-        <item name="drawableTint">@color/lightGrey</item>
+        <item name="drawableTint">@color/grey</item>
         <item name="android:drawablePadding">10sp</item>
         <item name="android:background">@drawable/search_bar_layout</item>
         <item name="android:textColor">@color/grey</item>

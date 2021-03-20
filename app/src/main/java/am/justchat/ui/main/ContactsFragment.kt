@@ -52,9 +52,7 @@ class ContactsFragment : Fragment() {
         addContactButton = root.findViewById(R.id.add_contact_btn)
         contactsList = root.findViewById(R.id.contacts_list)
         contactsList.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.VERTICAL, false)
-        searchBar.doAfterTextChanged {
-            getContactsList()
-        }
+        searchBar.doAfterTextChanged { getContactsList() }
         addContact()
 
         return root
