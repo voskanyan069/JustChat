@@ -204,37 +204,6 @@ class SettingsFragment : Fragment() {
         Picasso.get().load(CurrentUser.profileImage.toString()).into(profileImage)
     }
 
-//    private fun getUser() {
-//        usersRepo.usersService!!
-//            .getUser(CurrentUser.login.toString())
-//            .enqueue(object : Callback<JsonObject> {
-//                @SuppressLint("SetTextI18n")
-//                override fun onResponse(
-//                    call: Call<JsonObject>,
-//                    response: Response<JsonObject>
-//                ) {
-//                    val jsonParser = JsonParser()
-//                    val userJsonStr = Gson().toJson(response.body())
-//                    val userJson = jsonParser.parse(userJsonStr).asJsonObject
-//                    try {
-//                        val code: Int = userJson.get("code").asInt
-//                        if (code == 1) {
-//                            moveToSignUp()
-//                        }
-//                    } catch (e: Exception) {
-//                        val user = userJson.get("user").asJsonObject
-//                        Picasso.get().load(user.get("profile_image").asString).into(profileImage)
-//                        profileLogin.text = "Login: ${user.get("login").asString}"
-//                        profileUsername.text = "Username: ${user.get("username").asString}"
-//                    }
-//                }
-
-//                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-//                    Log.e("mTag", "Fetch error", t)
-//                }
-//            })
-//    }
-
     private fun logOut() {
         logOutText.setOnClickListener {
              moveToSignUp()

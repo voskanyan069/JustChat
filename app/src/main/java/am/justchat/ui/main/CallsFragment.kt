@@ -15,6 +15,9 @@ import am.justchat.models.Call
 import am.justchat.states.CallsState
 import android.content.Intent
 import android.util.Log
+import android.widget.EditText
+import androidx.core.widget.doAfterTextChanged
+import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -25,6 +28,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class CallsFragment : Fragment() {
+    private lateinit var searchBar: EditText
     private lateinit var callsList: RecyclerView
     private val callsRepo = CallsRepo.getInstance()
     private val callsArrayList = arrayListOf<Call>()
@@ -34,15 +38,19 @@ class CallsFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_calls, container, false)
 
+        searchBar = root.findViewById(R.id.calls_search_bar)
         callsList = root.findViewById(R.id.calls_list)
         callsList.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.VERTICAL, false)
+        searchBar.doAfterTextChanged {
+            getCallsList()
+        }
 
         return root
     }
 
     private fun requestsTask(): Job = CoroutineScope(Dispatchers.Main).launch {
         while (isFragmentActive) {
-            Log.d("mTag", "Sent calls get request")
+            Log.d("mTag", "Sent calls get request (query - ${searchBar.text})")
             getCallsList()
             delay(Config.REQUESTS_DELAY)
         }
@@ -52,45 +60,47 @@ class CallsFragment : Fragment() {
         if (CurrentUser.login != "null") {
             callsArrayList.clear()
             callsRepo.callsService!!
-                .getUserCalls(CurrentUser.login.toString())
-                .enqueue(object : Callback<JsonObject> {
-                    override fun onResponse(
-                        call: retrofit2.Call<JsonObject>,
-                        response: Response<JsonObject>
-                    ) {
-                        val jsonParser = JsonParser()
-                        val callsJsonStr = Gson().toJson(response.body())
-                        val callsJson = jsonParser.parse(callsJsonStr).asJsonObject
-                        try {
-                            val code: Int = callsJson.get("code").asInt
-                            if (code == 1) {
-                                moveToSignUp()
+                    .getUserCalls(
+                            login = CurrentUser.login.toString(),
+                            query = searchBar.text.toString()
+                    ).enqueue(object : Callback<JsonObject> {
+                        override fun onResponse(
+                                call: retrofit2.Call<JsonObject>,
+                                response: Response<JsonObject>
+                        ) {
+                            val jsonParser = JsonParser()
+                            val callsJsonStr = Gson().toJson(response.body())
+                            val callsJson = jsonParser.parse(callsJsonStr).asJsonObject
+                            try {
+                                val code: Int = callsJson.get("code").asInt
+                                if (code == 1) {
+                                    moveToSignUp()
+                                }
+                            } catch (e: Exception) {
+                                val calls = callsJson.getAsJsonArray("calls")
+                                for (i in 0..calls.size().minus(1)) {
+                                    val callJson: JsonObject = calls.get(i).asJsonObject
+                                    val thisCall = Call(
+                                            profileUsername = callJson.get("username").asString,
+                                            callsState = when (callJson.get("call_status").asString) {
+                                                "incoming" -> CallsState.INCOMING
+                                                "outgoing" -> CallsState.OUTGOING
+                                                "unanswered" -> CallsState.UNANSWERED
+                                                else -> CallsState.MISSED
+                                            },
+                                            callTime = callJson.get("call_time").asString,
+                                            profileImage = callJson.get("profile_image").asString
+                                    )
+                                    callsArrayList.add(thisCall)
+                                }
+                                fillCallsList(callsArrayList)
                             }
-                        } catch (e: Exception) {
-                            val calls = callsJson.getAsJsonArray("calls")
-                            for (i in 0..calls.size().minus(1)) {
-                                val callJson: JsonObject = calls.get(i).asJsonObject
-                                val thisCall = Call(
-                                        profileUsername = callJson.get("username").asString,
-                                        callsState = when (callJson.get("call_status").asString) {
-                                            "incoming" -> CallsState.INCOMING
-                                            "outgoing" -> CallsState.OUTGOING
-                                            "unanswered" -> CallsState.UNANSWERED
-                                            else -> CallsState.MISSED
-                                        },
-                                        callTime = callJson.get("call_time").asString,
-                                        profileImage = callJson.get("profile_image").asString
-                                )
-                                callsArrayList.add(thisCall)
-                            }
-                            fillCallsList(callsArrayList)
                         }
-                    }
 
-                    override fun onFailure(call: retrofit2.Call<JsonObject>, t: Throwable) {
-                        Log.e("mTag", "Fetch error", t)
-                    }
-                })
+                        override fun onFailure(call: retrofit2.Call<JsonObject>, t: Throwable) {
+                            Log.e("mTag", "Fetch error", t)
+                        }
+                    })
         }
     }
 

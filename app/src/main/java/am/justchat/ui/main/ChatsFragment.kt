@@ -20,6 +20,8 @@ import am.justchat.storage.SharedPreference
 import android.content.Intent
 import android.content.SharedPreferences
 import android.util.Log
+import android.widget.EditText
+import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.*
@@ -28,8 +30,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.lang.Exception
+import kotlin.math.log
 
 class ChatsFragment : Fragment() {
+    private lateinit var searchBar: EditText
     private lateinit var storiesList: RecyclerView
     private lateinit var chatsList: RecyclerView
     private lateinit var sharedPreference: SharedPreferences
@@ -47,10 +51,14 @@ class ChatsFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_chats, container, false)
 
         sharedPreference = SharedPreference.getInstance(context!!).sharedPreferences
+        searchBar = root.findViewById(R.id.chats_search_bar)
         storiesList = root.findViewById(R.id.stories_list)
         chatsList = root.findViewById(R.id.chats_list)
         storiesList.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.HORIZONTAL, false)
         chatsList.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.VERTICAL, false)
+        searchBar.doAfterTextChanged {
+            getChatsList()
+        }
 
         return root
     }
@@ -60,7 +68,7 @@ class ChatsFragment : Fragment() {
             Log.d("mTag", "Sent stories get request")
             getUserStoriesList()
             for (i in 0..4) {
-                Log.d("mTag", "Sent chats get request")
+                Log.d("mTag", "Sent chats get request (query - ${searchBar.text})")
                 getChatsList()
                 delay(Config.REQUESTS_DELAY)
             }
@@ -108,7 +116,7 @@ class ChatsFragment : Fragment() {
 
     private fun getContactsStoriesList() {
         contactsRepo.contactsService!!
-            .getContacts(login)
+            .getContacts(login = login, query = "")
             .enqueue(object : Callback<JsonObject> {
                 override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                     val contactsJsonStr = Gson().toJson(response.body())
@@ -167,7 +175,7 @@ class ChatsFragment : Fragment() {
         }
         chatsArrayList.clear()
         chatsRepo.chatsService!!
-            .getUserChats(login)
+            .getUserChats(login = login, query = searchBar.text.toString())
             .enqueue(object : Callback<JsonObject> {
                 override fun onResponse(
                     call: Call<JsonObject>,

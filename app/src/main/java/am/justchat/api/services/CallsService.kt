@@ -6,5 +6,5 @@ import retrofit2.http.*
 
 interface CallsService {
     @GET("/get_calls/{login}")
-    fun getUserCalls(@Path(value = "login") login: String): Call<JsonObject>
+    fun getUserCalls(@Path(value = "login") login: String, @Query(value = "q") query: String): Call<JsonObject>
 }

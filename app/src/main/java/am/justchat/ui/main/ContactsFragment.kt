@@ -24,6 +24,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -34,6 +35,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class ContactsFragment : Fragment() {
+    private lateinit var searchBar: EditText
     private lateinit var addContactButton: ImageView
     private lateinit var contactsList: RecyclerView
     private val contactsArrayList = arrayListOf<Contact>()
@@ -46,9 +48,13 @@ class ContactsFragment : Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_contacts, container, false)
 
+        searchBar = root.findViewById(R.id.contacts_search_bar)
         addContactButton = root.findViewById(R.id.add_contact_btn)
         contactsList = root.findViewById(R.id.contacts_list)
         contactsList.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.VERTICAL, false)
+        searchBar.doAfterTextChanged {
+            getContactsList()
+        }
         addContact()
 
         return root
@@ -56,7 +62,7 @@ class ContactsFragment : Fragment() {
 
     private fun requestsTask(): Job = CoroutineScope(Dispatchers.Main).launch {
         while (isFragmentActive) {
-            Log.d("mTag", "Sent contacts get request")
+            Log.d("mTag", "Sent contacts get request (query - ${searchBar.text})")
             getContactsList()
             delay(Config.REQUESTS_DELAY)
         }
@@ -134,7 +140,7 @@ class ContactsFragment : Fragment() {
     private fun getContactsList() {
         contactsArrayList.clear()
         contactsRepo.contactsService!!
-                .getContacts(CurrentUser.login!!)
+                .getContacts(login = CurrentUser.login!!, query = searchBar.text.toString())
                 .enqueue(object : Callback<JsonObject> {
                     override fun onResponse(
                             call: Call<JsonObject>,
