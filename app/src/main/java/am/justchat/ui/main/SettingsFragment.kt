@@ -2,7 +2,7 @@ package am.justchat.ui.main
 
 import am.justchat.R
 import am.justchat.activities.AuthenticationActivity
-import am.justchat.photoeditor.PhotoEditorActivity
+import am.justchat.activities.PhotoEditorActivity
 import am.justchat.api.repos.UsersRepo
 import am.justchat.authentication.CurrentUser
 import am.justchat.models.UpdateUser

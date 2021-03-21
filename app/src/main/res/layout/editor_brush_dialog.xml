@@ -11,50 +11,15 @@
 
     <SeekBar
         android:id="@+id/brush_size_bar"
+        android:progress="10"
         style="@style/Theme.JustChat.BottomSheetModal.Seekbar" />
 
     <TextView
         style="@style/Theme.JustChat.BottomSheetModal.TextView"
         android:text="@string/brush_color" />
 
-    <LinearLayout
+    <am.justchat.views.EditorColorPicker
+        android:id="@+id/brush_color_picker"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="4">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_weight="4">
-
-            <SeekBar
-                android:id="@+id/brush_color_r"
-                android:max="255"
-                android:thumbTint="@color/seekbarColorR"
-                android:progressTint="@color/seekbarColorR"
-                style="@style/Theme.JustChat.BottomSheetModal.Seekbar" />
-
-            <SeekBar
-                android:id="@+id/brush_color_g"
-                android:max="255"
-                android:thumbTint="@color/seekbarColorG"
-                android:progressTint="@color/seekbarColorG"
-                style="@style/Theme.JustChat.BottomSheetModal.Seekbar" />
-
-            <SeekBar
-                android:id="@+id/brush_color_b"
-                android:max="255"
-                android:thumbTint="@color/seekbarColorB"
-                android:progressTint="@color/seekbarColorB"
-                style="@style/Theme.JustChat.BottomSheetModal.Seekbar" />
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/brush_color_preview"
-            android:layout_width="wrap_content"
-            android:layout_height="90sp"
-            android:layout_marginEnd="10sp" />
-    </LinearLayout>
+        android:layout_height="wrap_content" />
 </LinearLayout>

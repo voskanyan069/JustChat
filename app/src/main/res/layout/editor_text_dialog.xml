@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/text_editor_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10sp"
+        android:layout_marginHorizontal="10sp"
+        android:paddingVertical="10sp"
+        android:paddingHorizontal="20sp"
+        android:background="@drawable/message_input_layout"
+        android:fontFamily="@font/firasans_medium"
+        android:textColor="@color/grey"
+        android:singleLine="true"
+        android:hint="@string/text" />
+
+    <TextView
+        style="@style/Theme.JustChat.BottomSheetModal.TextView"
+        android:text="@string/text_color" />
+
+    <am.justchat.views.EditorColorPicker
+        android:id="@+id/text_color_picker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/text_submit"
+        android:layout_marginTop="10sp"
+        android:layout_marginBottom="20sp"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/add_text"
+        style="@style/Theme.JustChat.Button" />
+
+</LinearLayout>

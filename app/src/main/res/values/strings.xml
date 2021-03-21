@@ -48,10 +48,12 @@
     <string name="new_password">New password</string>
     <string name="brush">Brush</string>
     <string name="eraser">Eraser</string>
-    <string name="text">Text</string>
     <string name="emoji">Emoji</string>
     <string name="filter">Filter</string>
     <string name="brush_size">Brush size</string>
     <string name="brush_color">Brush color</string>
     <string name="eraser_size">Eraser size</string>
+    <string name="text">Text</string>
+    <string name="text_color">Text color</string>
+    <string name="add_text">Add text</string>
 </resources>

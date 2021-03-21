@@ -14,5 +14,8 @@ object EditorSettings {
     var eraserSize: Int = 10
 
 //    Text
+    var textColorR: Int = 0
+    var textColorG: Int = 0
+    var textColorB: Int = 0
     var textColor: Int = Color.rgb(0, 0, 0)
 }
