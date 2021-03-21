@@ -2,21 +2,17 @@ package am.justchat.ui.main
 
 import am.justchat.R
 import am.justchat.activities.AuthenticationActivity
-import am.justchat.activities.PhotoEditorActivity
+import am.justchat.photoeditor.PhotoEditorActivity
 import am.justchat.api.repos.UsersRepo
 import am.justchat.authentication.CurrentUser
 import am.justchat.models.UpdateUser
 import am.justchat.storage.SharedPreference
-import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.os.Build.*
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputType

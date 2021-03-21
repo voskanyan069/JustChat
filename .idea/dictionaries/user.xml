@@ -2,8 +2,10 @@
   <dictionary name="user">
     <words>
       <w>autofill</w>
+      <w>emoji</w>
       <w>firasans</w>
       <w>justchat</w>
+      <w>seekbar</w>
     </words>
   </dictionary>
 </component>

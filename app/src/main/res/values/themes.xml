@@ -238,6 +238,22 @@
         <item name="itemIconTint">@color/lightGreen</item>
     </style>
 
+    <style name="Theme.JustChat.BottomSheetModal.TextView" parent="Widget.MaterialComponents.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">10sp</item>
+        <item name="android:fontFamily">@font/firasans_medium</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Theme.JustChat.BottomSheetModal.Seekbar" parent="Widget.AppCompat.SeekBar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">30sp</item>
+        <item name="android:progress">10</item>
+        <item name="android:thumbTint">@color/grey</item>
+        <item name="android:progressTint">@color/grey</item>
+    </style>
+
     <style name="Theme.JustChat.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="Theme.JustChat.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

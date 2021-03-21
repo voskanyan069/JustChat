@@ -38,4 +38,11 @@
     <color name="contactChat">#3e5159</color>
     <color name="contactDelete">#ef233c</color>
     <color name="menuItemColor">#ffffff</color>
+
+    <color name="editorMenuBackground">#242627</color>
+
+    <!--  Seekbar colors  -->
+    <color name="seekbarColorR">#800e13</color>
+    <color name="seekbarColorG">#2b9348</color>
+    <color name="seekbarColorB">#118ab2</color>
 </resources>

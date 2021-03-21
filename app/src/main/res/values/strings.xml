@@ -51,4 +51,7 @@
     <string name="text">Text</string>
     <string name="emoji">Emoji</string>
     <string name="filter">Filter</string>
+    <string name="brush_size">Brush size</string>
+    <string name="brush_color">Brush color</string>
+    <string name="eraser_size">Eraser size</string>
 </resources>

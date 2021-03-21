@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".activities.PhotoEditorActivity"
+    tools:context=".photoeditor.PhotoEditorActivity"
     android:orientation="vertical">
 
     <ja.burhanrashid52.photoeditor.PhotoEditorView
@@ -12,16 +12,57 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
-        android:layout_above="@id/photo_editor_menu"/>
+        android:layout_above="@id/photo_editor_menu" />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
+    <HorizontalScrollView
         android:id="@+id/photo_editor_menu"
         android:layout_width="match_parent"
         android:layout_height="80sp"
         android:layout_alignParentBottom="true"
-        app:menu="@menu/photo_editor_menu"
-        app:itemTextColor="@color/photo_editor_menu_color"
-        app:itemIconTint="@color/photo_editor_menu_color"
-        app:labelVisibilityMode="labeled"
-        android:background="#242627" />
+        android:background="@color/editorMenuBackground"
+        android:scrollbars="none"
+        android:clipToPadding="false">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <am.justchat.views.EditorMenuItem
+                android:id="@+id/editor_brush"
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+                app:title="@string/brush"
+                app:icon="@drawable/ic_brush" />
+
+            <am.justchat.views.EditorMenuItem
+                android:id="@+id/editor_eraser"
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+                app:title="@string/eraser"
+                app:icon="@drawable/ic_eraser" />
+
+            <am.justchat.views.EditorMenuItem
+                android:id="@+id/editor_text"
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+                app:icon="@drawable/ic_text"
+                app:title="@string/text" />
+
+            <am.justchat.views.EditorMenuItem
+                android:id="@+id/editor_emoji"
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+                app:icon="@drawable/ic_emoji"
+                app:title="@string/emoji" />
+
+            <am.justchat.views.EditorMenuItem
+                android:id="@+id/editor_filter"
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+                app:icon="@drawable/ic_layers"
+                app:title="@string/filter" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
 </RelativeLayout>
