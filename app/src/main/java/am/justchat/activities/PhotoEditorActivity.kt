@@ -1,10 +1,7 @@
 package am.justchat.activities
 
 import am.justchat.R
-import am.justchat.photoeditor.BrushBottomSheet
-import am.justchat.photoeditor.EditorSettings
-import am.justchat.photoeditor.EraserBottomSheet
-import am.justchat.photoeditor.TextBottomSheet
+import am.justchat.photoeditor.*
 import am.justchat.views.EditorMenuItem
 import android.Manifest
 import android.annotation.SuppressLint
@@ -53,6 +50,10 @@ class PhotoEditorActivity : AppCompatActivity() {
         fun addText(text: String) {
             photoEditor.addText(text, EditorSettings.textColor)
         }
+
+        fun addEmoji(emoji: String) {
+            photoEditor.addEmoji(emoji)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,8 +93,10 @@ class PhotoEditorActivity : AppCompatActivity() {
             textBottomSheet.show(supportFragmentManager, "ModalBottomSheet")
         }
         editorEmoji.setOnClickListener {
-            Log.d("mTag", "Emojies list - ${PhotoEditor.getEmojis(this)}")
-            photoEditor.addEmoji(PhotoEditor.getEmojis(this)[0])
+            val emojiBottomSheet = EmojiBottomSheet()
+            emojiBottomSheet.show(supportFragmentManager, "ModalBottomSheet")
+//            Log.d("mTag", "Emojies list - ${PhotoEditor.getEmojis(this)}")
+//            photoEditor.addEmoji(PhotoEditor.getEmojis(this)[0])
         }
         editorFilter.setOnClickListener {  }
     }
