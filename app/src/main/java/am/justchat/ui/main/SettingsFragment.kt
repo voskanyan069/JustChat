@@ -1,28 +1,33 @@
 package am.justchat.ui.main
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import am.justchat.R
 import am.justchat.activities.AuthenticationActivity
+import am.justchat.activities.PhotoEditorActivity
 import am.justchat.api.repos.UsersRepo
 import am.justchat.authentication.CurrentUser
 import am.justchat.models.UpdateUser
 import am.justchat.storage.SharedPreference
+import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build.*
+import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.gson.Gson
@@ -72,12 +77,20 @@ class SettingsFragment : Fragment() {
 
         getUser()
         initDialog()
+        updateProfileImage()
         updateUsername()
         updatePassword()
         switchNotificationsState()
         logOut()
 
         return root
+    }
+
+    private fun updateProfileImage() {
+        profileImage.setOnClickListener {
+            val intent = Intent(this.context, PhotoEditorActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun updateUsername() {
