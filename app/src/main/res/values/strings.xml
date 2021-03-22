@@ -56,4 +56,6 @@
     <string name="text">Text</string>
     <string name="text_color">Text color</string>
     <string name="add_text">Add text</string>
+    <string name="scale">Scale</string>
+    <string name="crop">Crop</string>
 </resources>

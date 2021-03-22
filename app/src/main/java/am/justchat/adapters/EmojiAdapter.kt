@@ -3,6 +3,7 @@ package am.justchat.adapters
 import am.justchat.R
 import am.justchat.activities.PhotoEditorActivity
 import am.justchat.holders.EmojiViewHolder
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView

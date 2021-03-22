@@ -63,6 +63,13 @@
                 app:icon="@drawable/ic_layers"
                 app:title="@string/filter" />
 
+            <am.justchat.views.EditorMenuItem
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+                app:icon="@drawable/ic_crop"
+                app:title="@string/crop"
+                />
+
         </LinearLayout>
     </HorizontalScrollView>
 </RelativeLayout>

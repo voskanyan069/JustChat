@@ -11,6 +11,5 @@ class EmojiViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun bind() {
         emojiText = itemView.findViewById(R.id.emoji_text)
-        emojiText.typeface = Typeface.createFromAsset(itemView.context.assets, "emojione-android.ttf")
     }
 }

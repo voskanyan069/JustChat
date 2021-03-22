@@ -27,7 +27,7 @@ class EmojiBottomSheet : BottomSheetDialogFragment() {
         val emojisArrayList: ArrayList<String> = PhotoEditor.getEmojis(this.context)
         emojiList = root.findViewById(R.id.emoji_list)
         emojiList.adapter = EmojiAdapter(emojisArrayList)
-        emojiList.layoutManager = GridLayoutManager(context, 5)
+        emojiList.layoutManager = GridLayoutManager(context, 5, GridLayoutManager.VERTICAL, false)
 
         return root
     }
