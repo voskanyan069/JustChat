@@ -54,6 +54,6 @@ class BrushBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun updateBrushSize() {
-        PhotoEditorActivity.updateBrushSize()
+        EditorFragment.updateBrushSize()
     }
 }

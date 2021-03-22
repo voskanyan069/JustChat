@@ -3,6 +3,7 @@ package am.justchat.adapters
 import am.justchat.R
 import am.justchat.activities.PhotoEditorActivity
 import am.justchat.holders.EmojiViewHolder
+import am.justchat.photoeditor.EditorFragment
 import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -21,7 +22,7 @@ class EmojiAdapter(private val dataSet: List<String>) : RecyclerView.Adapter<Emo
         holder.emojiText.text = item
 
         holder.emojiText.setOnClickListener {
-            PhotoEditorActivity.addEmoji(item)
+            EditorFragment.addEmoji(item)
         }
     }
 

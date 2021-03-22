@@ -42,7 +42,7 @@ class TextBottomSheet : BottomSheetDialogFragment() {
 
     private fun addText() {
         addText.setOnClickListener {
-            PhotoEditorActivity.addText(textInput.text.toString())
+            EditorFragment.addText(textInput.text.toString())
             onDestroy()
         }
     }

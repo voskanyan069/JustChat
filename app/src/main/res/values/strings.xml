@@ -58,4 +58,6 @@
     <string name="add_text">Add text</string>
     <string name="scale">Scale</string>
     <string name="crop">Crop</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

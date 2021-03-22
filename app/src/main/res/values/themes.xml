@@ -254,6 +254,11 @@
         <item name="android:progressTint">@color/grey</item>
     </style>
 
+    <style name="Theme.JustChat.Editor.FilterItem" parent="Widget.MaterialComponents.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
     <style name="Theme.JustChat.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="Theme.JustChat.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

@@ -3,6 +3,7 @@ package am.justchat.views
 import am.justchat.R
 import am.justchat.photoeditor.EditorSettings
 import am.justchat.activities.PhotoEditorActivity
+import am.justchat.photoeditor.EditorFragment
 import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
@@ -15,7 +16,7 @@ class EditorColorPicker(context: Context, attrs: AttributeSet) : LinearLayout(co
     val colorPickerR: SeekBar
     val colorPickerG: SeekBar
     val colorPickerB: SeekBar
-    val colorPreview: Button
+    private val colorPreview: Button
 
     init {
         LayoutInflater.from(context).inflate(R.layout.editor_color_picker, this, true)
@@ -91,7 +92,7 @@ class EditorColorPicker(context: Context, attrs: AttributeSet) : LinearLayout(co
         when (tool) {
             1 -> {
                 EditorSettings.brushColor = previewColor
-                PhotoEditorActivity.updateBrushColor()
+                EditorFragment.updateBrushColor()
             }
             2 -> EditorSettings.textColor = previewColor
         }

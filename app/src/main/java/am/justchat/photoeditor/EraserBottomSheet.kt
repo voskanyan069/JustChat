@@ -43,6 +43,6 @@ class EraserBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun updateEraser() {
-        PhotoEditorActivity.updateEraser()
+        EditorFragment.updateEraser()
     }
 }
