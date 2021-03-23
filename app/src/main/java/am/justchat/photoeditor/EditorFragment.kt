@@ -1,21 +1,25 @@
 package am.justchat.photoeditor
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import am.justchat.R
+import am.justchat.states.SwitchFragment
 import am.justchat.views.EditorMenuItem
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.Typeface
 import android.os.Build
+import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
+import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import ja.burhanrashid52.photoeditor.PhotoEditor
 import ja.burhanrashid52.photoeditor.PhotoEditorView
@@ -65,8 +69,8 @@ class EditorFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_editor, container, false)
 
@@ -81,7 +85,7 @@ class EditorFragment : Fragment() {
         val emojiTypeface = Typeface.createFromAsset(context?.assets, "emojione-android.ttf")
 
         photoEditor = PhotoEditor.Builder(context,
-            photoEditorView
+                photoEditorView
         )
             .setDefaultTextTypeface(fontTypeface)
             .setDefaultEmojiTypeface(emojiTypeface)
@@ -111,7 +115,7 @@ class EditorFragment : Fragment() {
             emojiBottomSheet.show(activity!!.supportFragmentManager, "ModalBottomSheet")
         }
         editorFilter.setOnClickListener {
-            TODO()
+            SwitchFragment.switch(activity!! as AppCompatActivity, FiltersFragment(), R.id.editor_fragment_container)
         }
     }
 
@@ -137,22 +141,22 @@ class EditorFragment : Fragment() {
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
+            requestCode: Int,
+            permissions: Array<out String>,
+            grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             PERMISSION_CODE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] ==
-                    PackageManager.PERMISSION_GRANTED
+                        PackageManager.PERMISSION_GRANTED
                 ) {
                     pickImageFromGallery()
                 } else {
                     Snackbar.make(
-                        photoEditorView,
-                        "Permission denied",
-                        Snackbar.LENGTH_SHORT
+                            photoEditorView,
+                            "Permission denied",
+                            Snackbar.LENGTH_SHORT
                     ).show()
                 }
             }
@@ -162,7 +166,9 @@ class EditorFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
-            photoEditorView.source.setImageURI(data?.data)
+            val bitmap = MediaStore.Images.Media.getBitmap(context?.contentResolver, data?.data)
+            EditorSettings.originalImage = bitmap
+            photoEditor.addImage(bitmap)
             Log.d("mTag", "Image data - ${data?.data}")
         }
     }

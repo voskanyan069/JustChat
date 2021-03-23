@@ -246,6 +246,12 @@
         <item name="android:textSize">16sp</item>
     </style>
 
+    <style name="Theme.JustChat.Editor.Filter.TextView" parent="Widget.MaterialComponents.TextView">
+        <item name="android:layout_width">100dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/firasans_medium</item>
+    </style>
+
     <style name="Theme.JustChat.BottomSheetModal.Seekbar" parent="Widget.AppCompat.SeekBar">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">30sp</item>

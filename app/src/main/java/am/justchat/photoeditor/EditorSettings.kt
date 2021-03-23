@@ -1,5 +1,6 @@
 package am.justchat.photoeditor
 
+import android.graphics.Bitmap
 import android.graphics.Color
 
 object EditorSettings {
@@ -18,4 +19,7 @@ object EditorSettings {
     var textColorG: Int = 0
     var textColorB: Int = 0
     var textColor: Int = Color.rgb(0, 0, 0)
+
+//    Filter
+    lateinit var originalImage: Bitmap
 }

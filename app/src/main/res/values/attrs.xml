@@ -9,4 +9,7 @@
     <declare-styleable name="EditorFilterItem">
         <attr name="title" />
     </declare-styleable>
+    <declare-styleable name="EditorFilterSeekbar">
+        <attr name="title" />
+    </declare-styleable>
 </resources>

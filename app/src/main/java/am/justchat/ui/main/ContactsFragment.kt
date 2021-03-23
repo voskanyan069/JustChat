@@ -138,7 +138,7 @@ class ContactsFragment : Fragment() {
     private fun getContactsList() {
         contactsArrayList.clear()
         contactsRepo.contactsService!!
-                .getContacts(login = CurrentUser.login!!, query = searchBar.text.toString())
+                .getContacts(login = CurrentUser.login ?: "null", query = searchBar.text.toString())
                 .enqueue(object : Callback<JsonObject> {
                     override fun onResponse(
                             call: Call<JsonObject>,
