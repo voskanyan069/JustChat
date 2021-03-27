@@ -1,12 +1,10 @@
 package am.justchat.photoeditor.filter
 
 import am.justchat.R
-import am.justchat.activities.MainActivity
 import am.justchat.adapters.FilterAdapter
 import am.justchat.listeners.FilterAdapterListener
-import am.justchat.utils.BitmapUtils
+import am.justchat.photoeditor.EditorSettings
 import am.justchat.utils.SpacesItemDecoration
-import android.R.attr
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.TypedValue
@@ -20,18 +18,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.zomato.photofilters.FilterPack
 import com.zomato.photofilters.imageprocessors.Filter
 import com.zomato.photofilters.utils.ThumbnailItem
-import com.zomato.photofilters.utils.ThumbnailsManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-
 class FiltersListFragment : Fragment(), FilterAdapterListener {
     private lateinit var filtersList: RecyclerView
-    private lateinit var adapter: FilterAdapter
-    private var listener: FilterAdapterListener? = null
-    private val filtersArrayList: ArrayList<ThumbnailItem> = arrayListOf()
+    private lateinit var filtersAdapterListener: FilterAdapterListener
+    private val filterThumbsArrayList: ArrayList<ThumbnailItem> = arrayListOf()
+    private val processedThumbsArrayList: ArrayList<ThumbnailItem> = arrayListOf()
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -39,48 +35,60 @@ class FiltersListFragment : Fragment(), FilterAdapterListener {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_filters_list, container, false)
 
-        adapter = FilterAdapter(filtersArrayList, this)
+        if (EditorSettings.filterAdapter == null) {
+            EditorSettings.filterAdapter = FilterAdapter(processedThumbsArrayList, this)
+        }
         filtersList = root.findViewById(R.id.editor_filters_list)
         filtersList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         filtersList.itemAnimator = DefaultItemAnimator()
         val space = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f,
                 resources.displayMetrics).toInt()
         filtersList.addItemDecoration(SpacesItemDecoration(space))
-        filtersList.adapter = adapter
-
-//        prepareFilter(null)
+        filtersList.adapter = EditorSettings.filterAdapter
 
         return root
     }
 
     fun setListener(listener: FilterAdapterListener) {
-        this.listener = listener
+        filtersAdapterListener = listener
     }
 
     fun prepareFilter(thumbImage: Bitmap): Job = CoroutineScope(Dispatchers.Main).launch {
-        ThumbnailsManager.clearThumbs()
-        filtersArrayList.clear()
+        filterThumbsArrayList.clear()
+        processedThumbsArrayList.clear()
 
         val thumbnailItem = ThumbnailItem()
         thumbnailItem.image = thumbImage
         thumbnailItem.filterName = "Normal"
-        ThumbnailsManager.addThumb(thumbnailItem)
+        filterThumbsArrayList.add(thumbnailItem)
 
-        val filters = FilterPack.getFilterPack(activity)
+        if (EditorSettings.filters == null) {
+            EditorSettings.filters = FilterPack.getFilterPack(context)
+        }
 
-        for (filter in filters) {
+        for (filter in EditorSettings.filters!!) {
             val tI = ThumbnailItem()
             tI.image = thumbImage
             tI.filter = filter
             tI.filterName = filter.name
-            ThumbnailsManager.addThumb(tI)
+            filterThumbsArrayList.add(tI)
         }
 
-        filtersArrayList.addAll(ThumbnailsManager.processThumbs(activity))
-        adapter.notifyDataSetChanged()
+        processFiltersImage()
+        EditorSettings.filterAdapter?.notifyDataSetChanged()
+    }
+
+    private fun processFiltersImage() {
+        for (thumb in filterThumbsArrayList) {
+            // scaling down the image
+            val size = 80
+            thumb.image = Bitmap.createScaledBitmap(thumb.image, size, size, false)
+            thumb.image = thumb.filter.processFilter(thumb.image)
+            processedThumbsArrayList.add(thumb)
+        }
     }
 
     override fun onFilterSelected(filter: Filter) {
-        listener?.onFilterSelected(filter)
+        filtersAdapterListener.onFilterSelected(filter)
     }
 }

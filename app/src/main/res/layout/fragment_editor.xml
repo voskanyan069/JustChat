@@ -101,6 +101,13 @@
                 app:icon="@drawable/ic_crop"
                 app:title="@string/crop" />
 
+            <am.justchat.views.EditorMenuItem
+                android:id="@+id/editor_save"
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+                app:icon="@drawable/ic_accept"
+                app:title="@string/save" />
+
         </LinearLayout>
     </HorizontalScrollView>
 </RelativeLayout>

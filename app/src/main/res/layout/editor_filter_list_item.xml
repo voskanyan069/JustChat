@@ -18,9 +18,10 @@
 
     <ImageView
         android:id="@+id/filter_image"
-        android:layout_width="wrap_content"
-        android:layout_height="80dp"
+        android:layout_width="@dimen/thumbnail_size"
+        android:layout_height="@dimen/thumbnail_size"
         android:adjustViewBounds="true"
-        android:scaleType="fitXY" />
+        android:scaleType="centerInside"
+        android:src="@drawable/log_in_background" />
 
 </LinearLayout>

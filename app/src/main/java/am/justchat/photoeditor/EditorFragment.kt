@@ -91,9 +91,15 @@ class EditorFragment : Fragment() {
             .setDefaultEmojiTypeface(emojiTypeface)
             .setPinchTextScalable(true)
             .build()
+        canvasInit()
         photoControllers()
-        checkPermission()
         editorTools()
+
+        if (!EditorSettings.isOriginalImageInitialized()) {
+            checkPermission()
+        } else {
+            photoEditor.addImage(EditorSettings.originalImage)
+        }
 
         return root
     }
@@ -116,15 +122,6 @@ class EditorFragment : Fragment() {
             emojiBottomSheet.show(activity!!.supportFragmentManager, "ModalBottomSheet")
         }
         editorFilter.setOnClickListener {
-            photoEditor.saveAsBitmap(object : OnSaveBitmap {
-                override fun onBitmapReady(saveBitmap: Bitmap?) {
-                    EditorSettings.originalImage = saveBitmap!!
-                }
-
-                override fun onFailure(e: Exception?) {
-                    Log.e("mTag", "Error on bitmap saving", e)
-                }
-            })
             SwitchFragment.switch(activity!! as AppCompatActivity, FiltersFragment(), R.id.editor_fragment_container)
         }
     }
@@ -182,17 +179,19 @@ class EditorFragment : Fragment() {
         }
     }
 
+    private fun canvasInit() {
+        val displayMetrics = DisplayMetrics()
+        activity!!.windowManager.defaultDisplay.getMetrics(displayMetrics)
+        val backgroundImage = Bitmap.createBitmap(displayMetrics.widthPixels, displayMetrics.heightPixels, Bitmap.Config.ARGB_8888)
+        photoEditorView.source.setImageBitmap(backgroundImage)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
-            val displayMetrics = DisplayMetrics()
-            activity!!.windowManager.defaultDisplay.getMetrics(displayMetrics)
             val bitmap = MediaStore.Images.Media.getBitmap(context?.contentResolver, data?.data)
             EditorSettings.originalImage = bitmap
-            val backgroundImage = Bitmap.createBitmap(displayMetrics.widthPixels, displayMetrics.heightPixels, Bitmap.Config.ARGB_8888)
-            photoEditorView.source.setImageBitmap(backgroundImage)
             photoEditor.addImage(bitmap)
-            Log.d("mTag", "Image data - ${data?.data}")
         }
     }
 }

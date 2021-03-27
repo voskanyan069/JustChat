@@ -49,6 +49,7 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'ja.burhanrashid52:photoeditor:1.1.1'
     implementation 'info.androidhive:imagefilters:1.0.7'
+    implementation 'com.github.yalantis:ucrop:2.2.6'
 
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:26.6.0')

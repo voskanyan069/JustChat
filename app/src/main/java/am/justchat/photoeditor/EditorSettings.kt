@@ -1,7 +1,12 @@
 package am.justchat.photoeditor
 
+import am.justchat.adapters.FilterAdapter
+import am.justchat.listeners.FilterAdapterListener
 import android.graphics.Bitmap
 import android.graphics.Color
+import androidx.recyclerview.widget.RecyclerView
+import com.zomato.photofilters.imageprocessors.Filter
+import com.zomato.photofilters.utils.ThumbnailItem
 
 object EditorSettings {
 //    Brush
@@ -20,6 +25,11 @@ object EditorSettings {
     var textColorB: Int = 0
     var textColor: Int = Color.rgb(0, 0, 0)
 
-//    Filter
+//    Image
     lateinit var originalImage: Bitmap
+    fun isOriginalImageInitialized(): Boolean = EditorSettings::originalImage.isInitialized
+
+//    Filters
+    var filters: List<Filter>? = null
+    var filterAdapter: FilterAdapter? = null
 }

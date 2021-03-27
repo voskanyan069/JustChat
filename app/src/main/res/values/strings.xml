@@ -61,4 +61,5 @@
     <string name="brightness">Brightness</string>
     <string name="contrast">Contrast</string>
     <string name="saturation">Saturation</string>
+    <string name="save">Save</string>
 </resources>

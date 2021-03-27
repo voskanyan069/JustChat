@@ -18,4 +18,7 @@ interface UsersService {
 
     @POST("/update_password")
     fun updatePassword(@Body user: UpdateUser): Call<JsonObject>
+
+    @POST("/update_profile_image")
+    fun updateProfileImage(@Body user: UpdateUser): Call<JsonObject>
 }

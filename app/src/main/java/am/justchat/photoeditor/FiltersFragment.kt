@@ -6,6 +6,7 @@ import am.justchat.listeners.EditImageFragmentListener
 import am.justchat.listeners.FilterAdapterListener
 import am.justchat.photoeditor.filter.EditImageFragment
 import am.justchat.photoeditor.filter.FiltersListFragment
+import am.justchat.states.SwitchFragment
 import am.justchat.utils.BitmapUtils
 import android.R.attr
 import android.app.Activity.RESULT_OK
@@ -16,6 +17,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
@@ -23,9 +25,12 @@ import com.zomato.photofilters.imageprocessors.Filter
 import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter
 import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter
 import com.zomato.photofilters.imageprocessors.subfilters.SaturationSubfilter
+import com.zomato.photofilters.utils.ThumbnailsManager
 
 
 class FiltersFragment : Fragment(), FilterAdapterListener, EditImageFragmentListener {
+    private lateinit var filterCancel: ImageView
+    private lateinit var filterSave: ImageView
     private lateinit var filterImagePreview: ImageView
     private lateinit var filterViewPager: ViewPager
     private lateinit var filterTabs: TabLayout
@@ -49,6 +54,8 @@ class FiltersFragment : Fragment(), FilterAdapterListener, EditImageFragmentList
                               savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_filters, container, false)
 
+        filterCancel = root.findViewById(R.id.filter_cancel)
+        filterSave = root.findViewById(R.id.filter_save)
         filterImagePreview = root.findViewById(R.id.filter_image_preview)
         filterViewPager = root.findViewById(R.id.filter_viewpager)
         filterTabs = root.findViewById(R.id.filter_tabs)
@@ -56,16 +63,29 @@ class FiltersFragment : Fragment(), FilterAdapterListener, EditImageFragmentList
         loadImage()
         setupViewPager()
         loadFiltersThumbnails()
+        filterSaveCancel()
         filterTabs.setupWithViewPager(filterViewPager)
 
         return root
+    }
+
+    private fun filterSaveCancel() {
+        filterCancel.setOnClickListener {
+            ThumbnailsManager.clearThumbs()
+            SwitchFragment.switch(activity!! as AppCompatActivity, EditorFragment(), R.id.editor_fragment_container)
+        }
+        filterSave.setOnClickListener {
+            EditorSettings.originalImage = finalImage
+            ThumbnailsManager.clearThumbs()
+            SwitchFragment.switch(activity!! as AppCompatActivity, EditorFragment(), R.id.editor_fragment_container)
+        }
     }
 
     private fun loadImage() {
         originalImage = EditorSettings.originalImage
         filteredImage = originalImage.copy(Bitmap.Config.ARGB_8888, true);
         finalImage = originalImage.copy(Bitmap.Config.ARGB_8888, true);
-        filterImagePreview.setImageBitmap(originalImage);
+        filterImagePreview.setImageBitmap(originalImage)
     }
 
     private fun loadFiltersThumbnails() {
