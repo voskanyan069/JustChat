@@ -18,6 +18,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
@@ -28,6 +29,8 @@ import ja.burhanrashid52.photoeditor.PhotoEditorView
 
 class EditorFragment : Fragment() {
     private lateinit var photoEditorView: PhotoEditorView
+    private lateinit var photoEditorUndo: ImageView
+    private lateinit var photoEditorRedo: ImageView
     private lateinit var editorBrush: EditorMenuItem
     private lateinit var editorEraser: EditorMenuItem
     private lateinit var editorText: EditorMenuItem
@@ -72,6 +75,8 @@ class EditorFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_editor, container, false)
 
         photoEditorView = root.findViewById(R.id.photo_editor_view)
+        photoEditorUndo = root.findViewById(R.id.photo_editor_undo)
+        photoEditorRedo = root.findViewById(R.id.photo_editor_redo)
         editorBrush = root.findViewById(R.id.editor_brush)
         editorEraser = root.findViewById(R.id.editor_eraser)
         editorText = root.findViewById(R.id.editor_text)
@@ -86,6 +91,7 @@ class EditorFragment : Fragment() {
             .setDefaultEmojiTypeface(emojiTypeface)
             .setPinchTextScalable(true)
             .build()
+        photoControllers()
         checkPermission()
         editorTools()
 
@@ -120,6 +126,15 @@ class EditorFragment : Fragment() {
                 }
             })
             SwitchFragment.switch(activity!! as AppCompatActivity, FiltersFragment(), R.id.editor_fragment_container)
+        }
+    }
+
+    private fun photoControllers() {
+        photoEditorUndo.setOnClickListener {
+            photoEditor.undo()
+        }
+        photoEditorRedo.setOnClickListener {
+            photoEditor.redo()
         }
     }
 
