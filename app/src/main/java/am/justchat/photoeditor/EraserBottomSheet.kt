@@ -25,7 +25,7 @@ class EraserBottomSheet : BottomSheetDialogFragment() {
         eraserSize = root.findViewById(R.id.eraser_size_bar)
         eraserSize.progress = EditorSettings.eraserSize
         setEraserSize()
-        updateEraser()
+        EditorFragment.updateEraser()
 
         return root
     }
@@ -34,15 +34,11 @@ class EraserBottomSheet : BottomSheetDialogFragment() {
         eraserSize.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 EditorSettings.eraserSize = progress
-                updateEraser()
+                EditorFragment.updateEraser()
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
-    }
-
-    private fun updateEraser() {
-        EditorFragment.updateEraser()
     }
 }

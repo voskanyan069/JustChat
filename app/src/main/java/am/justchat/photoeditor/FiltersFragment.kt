@@ -55,29 +55,29 @@ class FiltersFragment : Fragment(), FilterAdapterListener, EditImageFragmentList
 
         loadImage()
         setupViewPager()
+        loadFiltersThumbnails()
         filterTabs.setupWithViewPager(filterViewPager)
 
         return root
     }
 
     private fun loadImage() {
-//        originalImage = BitmapUtils.getBitmapFromAsserts(context!!, "dog.jpg", 300, 300)!!;
         originalImage = EditorSettings.originalImage
         filteredImage = originalImage.copy(Bitmap.Config.ARGB_8888, true);
         finalImage = originalImage.copy(Bitmap.Config.ARGB_8888, true);
         filterImagePreview.setImageBitmap(originalImage);
     }
 
+    private fun loadFiltersThumbnails() {
+        filtersListFragment.prepareFilter(originalImage)
+    }
+
     private fun setupViewPager() {
         val adapter = FilterViewPagerAdapter(activity!!.supportFragmentManager)
 
         // adding filter list fragment
-
-        // adding filter list fragment
         filtersListFragment = FiltersListFragment()
         filtersListFragment.setListener(this)
-
-        // adding edit image fragment
 
         // adding edit image fragment
         val editImageFragment = EditImageFragment()
@@ -91,7 +91,7 @@ class FiltersFragment : Fragment(), FilterAdapterListener, EditImageFragmentList
 
     override fun onFilterSelected(filter: Filter) {
         // reset image controls
-        resetControls();
+//        resetControls();
 
         // applying the selected filter
         filteredImage = originalImage.copy(Bitmap.Config.ARGB_8888, true);
@@ -135,6 +135,9 @@ class FiltersFragment : Fragment(), FilterAdapterListener, EditImageFragmentList
     }
 
     private fun resetControls() {
+        if (!this::editImageFragment.isInitialized) {
+            editImageFragment = EditImageFragment()
+        }
         editImageFragment.resetControllers()
         brightnessFinal = 0
         saturationFinal = 1.0f

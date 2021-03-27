@@ -13,6 +13,7 @@ import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -21,11 +22,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
+import ja.burhanrashid52.photoeditor.OnSaveBitmap
 import ja.burhanrashid52.photoeditor.PhotoEditor
 import ja.burhanrashid52.photoeditor.PhotoEditorView
-import ja.burhanrashid52.photoeditor.PhotoFilter
 
 class EditorFragment : Fragment() {
+    private lateinit var photoEditorView: PhotoEditorView
     private lateinit var editorBrush: EditorMenuItem
     private lateinit var editorEraser: EditorMenuItem
     private lateinit var editorText: EditorMenuItem
@@ -35,9 +37,9 @@ class EditorFragment : Fragment() {
     companion object {
         private const val IMAGE_PICK_CODE = 1000
         private const val PERMISSION_CODE = 1001
+
         @SuppressLint("StaticFieldLeak")
         private lateinit var photoEditor: PhotoEditor
-        private lateinit var photoEditorView: PhotoEditorView
 
         fun updateBrushColor() {
             photoEditor.setBrushDrawingMode(true)
@@ -45,6 +47,7 @@ class EditorFragment : Fragment() {
         }
 
         fun updateBrushSize() {
+            photoEditor.setBrushDrawingMode(true)
             photoEditor.brushSize = EditorSettings.brushSize.toFloat()
         }
 
@@ -60,12 +63,6 @@ class EditorFragment : Fragment() {
         fun addEmoji(emoji: String) {
             photoEditor.addEmoji(emoji)
         }
-
-        fun setFilter(filter: PhotoFilter) {
-            photoEditor.setFilterEffect(filter)
-        }
-
-        fun getPhotoEditorView(): PhotoEditorView = photoEditorView
     }
 
     override fun onCreateView(
@@ -84,9 +81,7 @@ class EditorFragment : Fragment() {
         val fontTypeface = ResourcesCompat.getFont(context!!, R.font.firasans_medium)
         val emojiTypeface = Typeface.createFromAsset(context?.assets, "emojione-android.ttf")
 
-        photoEditor = PhotoEditor.Builder(context,
-                photoEditorView
-        )
+        photoEditor = PhotoEditor.Builder(context, photoEditorView)
             .setDefaultTextTypeface(fontTypeface)
             .setDefaultEmojiTypeface(emojiTypeface)
             .setPinchTextScalable(true)
@@ -115,6 +110,15 @@ class EditorFragment : Fragment() {
             emojiBottomSheet.show(activity!!.supportFragmentManager, "ModalBottomSheet")
         }
         editorFilter.setOnClickListener {
+            photoEditor.saveAsBitmap(object : OnSaveBitmap {
+                override fun onBitmapReady(saveBitmap: Bitmap?) {
+                    EditorSettings.originalImage = saveBitmap!!
+                }
+
+                override fun onFailure(e: Exception?) {
+                    Log.e("mTag", "Error on bitmap saving", e)
+                }
+            })
             SwitchFragment.switch(activity!! as AppCompatActivity, FiltersFragment(), R.id.editor_fragment_container)
         }
     }
@@ -166,8 +170,12 @@ class EditorFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
+            val displayMetrics = DisplayMetrics()
+            activity!!.windowManager.defaultDisplay.getMetrics(displayMetrics)
             val bitmap = MediaStore.Images.Media.getBitmap(context?.contentResolver, data?.data)
             EditorSettings.originalImage = bitmap
+            val backgroundImage = Bitmap.createBitmap(displayMetrics.widthPixels, displayMetrics.heightPixels, Bitmap.Config.ARGB_8888)
+            photoEditorView.source.setImageBitmap(backgroundImage)
             photoEditor.addImage(bitmap)
             Log.d("mTag", "Image data - ${data?.data}")
         }

@@ -33,10 +33,11 @@ class BrushBottomSheet : BottomSheetDialogFragment() {
         brushColorPicker.colorPickerR.progress = EditorSettings.brushColorR
         brushColorPicker.colorPickerG.progress = EditorSettings.brushColorG
         brushColorPicker.colorPickerB.progress = EditorSettings.brushColorB
+        brushColorPicker.colorPreview.setBackgroundColor(EditorSettings.brushColor)
         brushColorPicker.setColorsListeners(1)
 
         setBrushSize()
-        updateBrushSize()
+        EditorFragment.updateBrushSize()
 
         return root
     }
@@ -45,15 +46,11 @@ class BrushBottomSheet : BottomSheetDialogFragment() {
         brushSize.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 EditorSettings.brushSize = progress
-                updateBrushSize()
+                EditorFragment.updateBrushSize()
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
-    }
-
-    private fun updateBrushSize() {
-        EditorFragment.updateBrushSize()
     }
 }

@@ -16,7 +16,7 @@ class EditorColorPicker(context: Context, attrs: AttributeSet) : LinearLayout(co
     val colorPickerR: SeekBar
     val colorPickerG: SeekBar
     val colorPickerB: SeekBar
-    private val colorPreview: Button
+    val colorPreview: Button
 
     init {
         LayoutInflater.from(context).inflate(R.layout.editor_color_picker, this, true)

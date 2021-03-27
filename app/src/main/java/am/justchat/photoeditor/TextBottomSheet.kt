@@ -33,6 +33,7 @@ class TextBottomSheet : BottomSheetDialogFragment() {
         textColorPicker.colorPickerR.progress = EditorSettings.textColorR
         textColorPicker.colorPickerG.progress = EditorSettings.textColorG
         textColorPicker.colorPickerB.progress = EditorSettings.textColorB
+        textColorPicker.colorPreview.setBackgroundColor(EditorSettings.textColor)
         textColorPicker.setColorsListeners(2)
 
         addText()

@@ -48,6 +48,8 @@ class FiltersListFragment : Fragment(), FilterAdapterListener {
         filtersList.addItemDecoration(SpacesItemDecoration(space))
         filtersList.adapter = adapter
 
+//        prepareFilter(null)
+
         return root
     }
 
