@@ -29,12 +29,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.switchmaterial.SwitchMaterial
-import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.UploadTask
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -90,7 +87,7 @@ class SettingsFragment : Fragment() {
         updatePassword = root.findViewById(R.id.settings_update_password)
         notificationSwitcher = root.findViewById(R.id.notification_enabled)
 
-        getUser()
+        updateUser()
         initDialog()
         updateProfileImage()
         updateUsername()
@@ -138,27 +135,31 @@ class SettingsFragment : Fragment() {
                                     call: Call<JsonObject>,
                                     response: Response<JsonObject>
                                 ) {
-                                    messageErrorMessage.text = ""
-                                    val userJsonStr = Gson().toJson(response.body())
-                                    val userJson = jsonParser.parse(userJsonStr).asJsonObject
-                                    val isUsernameUpdated =
-                                        userJson.get("username_updated").asBoolean
-                                    val text = when (isUsernameUpdated) {
-                                        true -> "Username was successfully updated"
-                                        false -> "Some was wrong while updating username, please try again later"
+                                    try {
+                                        messageErrorMessage.text = ""
+                                        val userJsonStr = Gson().toJson(response.body())
+                                        val userJson = jsonParser.parse(userJsonStr).asJsonObject
+                                        val isUsernameUpdated =
+                                                userJson.get("username_updated").asBoolean
+                                        val text = when (isUsernameUpdated) {
+                                            true -> "Username was successfully updated"
+                                            false -> "Some was wrong while updating username, please try again later"
+                                        }
+                                        if (isUsernameUpdated) {
+                                            CurrentUser.username = newUsername
+                                            sharedPreferenceEditor.putString(
+                                                    "username",
+                                                    newUsername
+                                            )
+                                            sharedPreferenceEditor.commit()
+                                        }
+                                        Snackbar.make(updateUsername, text, Snackbar.LENGTH_SHORT)
+                                                .show()
+                                        messageBoxInstance.dismiss()
+                                        profileUsername.text = "Username: ${CurrentUser.username}"
+                                    } catch (e: Exception) {
+                                        Log.e("mTag", "Fetch error", e)
                                     }
-                                    if (isUsernameUpdated) {
-                                        CurrentUser.username = newUsername
-                                        sharedPreferenceEditor.putString(
-                                            "username",
-                                            newUsername
-                                        )
-                                        sharedPreferenceEditor.commit()
-                                    }
-                                    Snackbar.make(updateUsername, text, Snackbar.LENGTH_SHORT)
-                                        .show()
-                                    messageBoxInstance.dismiss()
-                                    profileUsername.text = "Username: ${CurrentUser.username}"
                                 }
 
                                 override fun onFailure(call: Call<JsonObject>, t: Throwable) {
@@ -200,16 +201,20 @@ class SettingsFragment : Fragment() {
                                     call: Call<JsonObject>,
                                     response: Response<JsonObject>
                                 ) {
-                                    messageErrorMessage.text = ""
-                                    val userJsonStr = Gson().toJson(response.body())
-                                    val userJson = jsonParser.parse(userJsonStr).asJsonObject
-                                    val text = when (userJson.get("password_updated").asBoolean) {
-                                        true -> "Password was successfully updated"
-                                        false -> "Some was wrong while updating password, please try again later"
+                                    try {
+                                        messageErrorMessage.text = ""
+                                        val userJsonStr = Gson().toJson(response.body())
+                                        val userJson = jsonParser.parse(userJsonStr).asJsonObject
+                                        val text = when (userJson.get("password_updated").asBoolean) {
+                                            true -> "Password was successfully updated"
+                                            false -> "Some was wrong while updating password, please try again later"
+                                        }
+                                        Snackbar.make(updatePassword, text, Snackbar.LENGTH_SHORT)
+                                                .show()
+                                        messageBoxInstance.dismiss()
+                                    } catch (e: Exception) {
+                                        Log.e("mTag", "Fetch error", e)
                                     }
-                                    Snackbar.make(updatePassword, text, Snackbar.LENGTH_SHORT)
-                                        .show()
-                                    messageBoxInstance.dismiss()
                                 }
 
                                 override fun onFailure(call: Call<JsonObject>, t: Throwable) {
@@ -222,6 +227,7 @@ class SettingsFragment : Fragment() {
         }
     }
 
+    @SuppressLint("InflateParams")
     private fun initDialog() {
         messageBoxView = LayoutInflater.from(activity).inflate(
             R.layout.update_user_dialog,
@@ -245,7 +251,7 @@ class SettingsFragment : Fragment() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun getUser() {
+    private fun updateUser() {
         profileLogin.text = "Login: ${CurrentUser.login}"
         profileUsername.text = "Username: ${CurrentUser.username}"
         Picasso.get().load(CurrentUser.profileImage.toString()).into(profileImage)
@@ -332,14 +338,23 @@ class SettingsFragment : Fragment() {
                                                 call: Call<JsonObject>,
                                                 response: Response<JsonObject>
                                             ) {
-                                                val userJsonStr = Gson().toJson(response.body())
-                                                val userJson =
-                                                    jsonParser.parse(userJsonStr).asJsonObject
-                                                val imageUpdated =
-                                                    userJson.get("profile_image_updated").asBoolean
-                                                if (imageUpdated) {
-                                                    getUser()
-                                                    Log.d("mTag", "Profile image updated")
+                                                try {
+                                                    val userJsonStr = Gson().toJson(response.body())
+                                                    val userJson =
+                                                            jsonParser.parse(userJsonStr).asJsonObject
+                                                    val imageUpdated =
+                                                            userJson.get("profile_image_updated").asBoolean
+                                                    if (imageUpdated) {
+                                                        updateUser()
+                                                        Log.d("mTag", "Profile image updated")
+                                                    }
+                                                } catch (e: Exception) {
+                                                    Snackbar.make(
+                                                            profileImage,
+                                                            "If the image is not changed reload the screen",
+                                                            Snackbar.LENGTH_SHORT
+                                                    ).show()
+                                                    updateUser()
                                                 }
                                             }
 

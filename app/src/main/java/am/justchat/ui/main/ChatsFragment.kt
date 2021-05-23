@@ -83,14 +83,9 @@ class ChatsFragment : Fragment() {
             .getUserStories(login)
             .enqueue(object : Callback<JsonObject> {
                 override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                    val storiesJsonStr = Gson().toJson(response.body())
-                    val storiesJson: JsonObject = jsonParser.parse(storiesJsonStr).asJsonObject
                     try {
-                        val code: Int = storiesJson.get("code").asInt
-                        if (code == 1) {
-                            moveToSignUp()
-                        }
-                    } catch (e: Exception) {
+                        val storiesJsonStr = Gson().toJson(response.body())
+                        val storiesJson: JsonObject = jsonParser.parse(storiesJsonStr).asJsonObject
                         val storyJson: JsonObject = storiesJson.getAsJsonObject("stories")
                         val storyMediaPathJson: JsonArray = storyJson.getAsJsonArray("media_path")
                         val storyMediaPath = arrayListOf<String>()
@@ -104,6 +99,8 @@ class ChatsFragment : Fragment() {
                         )
                         storiesArrayList.add(story)
                         getContactsStoriesList()
+                    } catch (e: Exception) {
+                        Log.e("mTag", "Fetch error", e)
                     }
                 }
 
@@ -118,14 +115,9 @@ class ChatsFragment : Fragment() {
             .getContacts(login = login, query = "")
             .enqueue(object : Callback<JsonObject> {
                 override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                    val contactsJsonStr = Gson().toJson(response.body())
-                    val contactsJson: JsonObject = jsonParser.parse(contactsJsonStr).asJsonObject
                     try {
-                        val code: Int = contactsJson.get("code").asInt
-                        if (code == 1) {
-                            moveToSignUp()
-                        }
-                    } catch (e: Exception) {
+                        val contactsJsonStr = Gson().toJson(response.body())
+                        val contactsJson: JsonObject = jsonParser.parse(contactsJsonStr).asJsonObject
                         val contacts: JsonArray = contactsJson.getAsJsonArray("contacts")
                         for (i in 0..contacts.size().minus(1)) {
                             val contactJson: JsonObject = contacts.get(i).asJsonObject
@@ -159,6 +151,8 @@ class ChatsFragment : Fragment() {
                                     })
                         }
                         fillStoriesList(storiesArrayList)
+                    } catch (e: Exception) {
+                        Log.e("mTag", "Fetch error", e)
                     }
                 }
 
@@ -180,34 +174,27 @@ class ChatsFragment : Fragment() {
                         call: Call<JsonObject>,
                         response: Response<JsonObject>
                 ) {
-                    val chatsJsonStr = Gson().toJson(response.body())
-                    val chatsJson: JsonObject = jsonParser.parse(chatsJsonStr).asJsonObject
                     try {
-                        val code: Int = chatsJson.get("code").asInt
-                        if (code == 1) {
-                            moveToSignUp()
+                        val chatsJsonStr = Gson().toJson(response.body())
+                        val chatsJson: JsonObject = jsonParser.parse(chatsJsonStr).asJsonObject
+                        val chats: JsonArray = chatsJson.getAsJsonArray("chats")
+                        for (i in 0..chats.size().minus(1)) {
+                            val chatJson: JsonObject = chats.get(i).asJsonObject
+                            val chat = Chat(
+                                    profileLogin = chatJson.get("login").asString,
+                                    profileUsername = chatJson.get("username").asString,
+                                    isOnline = when (chatJson.get("status").asString) {
+                                        "online" -> OnlineState.ONLINE
+                                        else -> OnlineState.OFFLINE
+                                    },
+                                    lastMessage = chatJson.get("last_msg").asString,
+                                    profileImage = chatJson.get("profile_image").asString
+                            )
+                            chatsArrayList.add(chat)
                         }
+                        fillChatsList(chatsArrayList)
                     } catch (e: Exception) {
-                        try {
-                            val chats: JsonArray = chatsJson.getAsJsonArray("chats")
-                            for (i in 0..chats.size().minus(1)) {
-                                val chatJson: JsonObject = chats.get(i).asJsonObject
-                                val chat = Chat(
-                                        profileLogin = chatJson.get("login").asString,
-                                        profileUsername = chatJson.get("username").asString,
-                                        isOnline = when (chatJson.get("status").asString) {
-                                            "online" -> OnlineState.ONLINE
-                                            else -> OnlineState.OFFLINE
-                                        },
-                                        lastMessage = chatJson.get("last_msg").asString,
-                                        profileImage = chatJson.get("profile_image").asString
-                                )
-                                chatsArrayList.add(chat)
-                            }
-                            fillChatsList(chatsArrayList)
-                        } catch (n: NullPointerException) {
-                            Log.e("mTag", "Null chats json array", n)
-                        }
+                        Log.e("mTag", "Fetch error", e)
                     }
                 }
 
@@ -225,12 +212,6 @@ class ChatsFragment : Fragment() {
     private fun fillChatsList(data: List<Chat>) {
         chatsList.adapter = ChatsAdapter(data)
         chatsList.adapter?.notifyDataSetChanged()
-    }
-
-    private fun moveToSignUp() {
-        val intent = Intent(activity, AuthenticationActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
     }
 
     override fun onStop() {

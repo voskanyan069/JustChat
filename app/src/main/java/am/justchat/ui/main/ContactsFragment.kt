@@ -101,27 +101,31 @@ class ContactsFragment : Fragment() {
                                         contactLogin = loginInput.text.toString()
                                 )).enqueue(object : Callback<JsonObject> {
                                     override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                                        val jsonParser = JsonParser()
-                                        val contactJsonStr = Gson().toJson(response.body())
-                                        val contactJson: JsonObject = jsonParser
-                                                .parse(contactJsonStr).asJsonObject
                                         try {
-                                            when (contactJson.get("code").asInt) {
-                                                1 -> errorMessage.text = getString(R.string.not_find_contact)
-                                                3 -> errorMessage.text = getString(R.string.some_login_contact)
-                                                5 -> errorMessage.text = getString(R.string.contact_contains)
+                                            val jsonParser = JsonParser()
+                                            val contactJsonStr = Gson().toJson(response.body())
+                                            val contactJson: JsonObject = jsonParser
+                                                    .parse(contactJsonStr).asJsonObject
+                                            try {
+                                                when (contactJson.get("code").asInt) {
+                                                    1 -> errorMessage.text = getString(R.string.not_find_contact)
+                                                    3 -> errorMessage.text = getString(R.string.some_login_contact)
+                                                    5 -> errorMessage.text = getString(R.string.contact_contains)
+                                                }
+                                            } catch (e: Exception) {
+                                                val isContactAdded = contactJson.get("contact_added").asBoolean
+                                                if (isContactAdded) {
+                                                    errorMessage.text = ""
+                                                    messageBoxInstance.dismiss()
+                                                    Snackbar.make(
+                                                            addContactButton,
+                                                            "The contact was added",
+                                                            Snackbar.LENGTH_SHORT
+                                                    ).show()
+                                                }
                                             }
                                         } catch (e: Exception) {
-                                            val isContactAdded = contactJson.get("contact_added").asBoolean
-                                            if (isContactAdded) {
-                                                errorMessage.text = ""
-                                                messageBoxInstance.dismiss()
-                                                Snackbar.make(
-                                                        addContactButton,
-                                                        "The contact was added",
-                                                        Snackbar.LENGTH_SHORT
-                                                ).show()
-                                            }
+                                            Log.e("mTag", "Fetch error", e)
                                         }
                                     }
 
@@ -144,16 +148,11 @@ class ContactsFragment : Fragment() {
                             call: Call<JsonObject>,
                             response: Response<JsonObject>
                     ) {
-                        val jsonParser = JsonParser()
-                        val contactsJsonStr = Gson().toJson(response.body())
-                        val contactsJson: JsonObject = jsonParser
-                                .parse(contactsJsonStr).asJsonObject
                         try {
-                            val code: Int = contactsJson.get("code").asInt
-                            if (code == 1) {
-                                moveToSignUp()
-                            }
-                        } catch (e: Exception) {
+                            val jsonParser = JsonParser()
+                            val contactsJsonStr = Gson().toJson(response.body())
+                            val contactsJson: JsonObject = jsonParser
+                                    .parse(contactsJsonStr).asJsonObject
                             val contacts: JsonArray = contactsJson.getAsJsonArray("contacts")
                             for (i in 0..contacts.size().minus(1)) {
                                 val contactJson: JsonObject = contacts.get(i).asJsonObject
@@ -168,6 +167,8 @@ class ContactsFragment : Fragment() {
                                 contactsArrayList.add(cont)
                             }
                             fillContactsList(contactsArrayList)
+                        } catch (e: Exception) {
+                            Log.e("mTag", "Fetch error", e)
                         }
                     }
 
@@ -179,12 +180,6 @@ class ContactsFragment : Fragment() {
 
     private fun fillContactsList(data: ArrayList<Contact>) {
         contactsList.adapter = ContactsAdapter(data)
-    }
-
-    private fun moveToSignUp() {
-        val intent = Intent(activity, AuthenticationActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
     }
 
     override fun onStop() {

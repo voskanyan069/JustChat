@@ -48,6 +48,11 @@ class ContactsAdapter(private val dataSet: ArrayList<Contact>) : RecyclerView.Ad
         Picasso.get().load(item.profileImage).fit().centerCrop().into(holder.profileImage)
 
         holder.callContactButton.setOnClickListener {
+            Snackbar.make(
+                    holder.profileImage,
+                    "Calling isn't available now",
+                    Snackbar.LENGTH_SHORT
+            ).show()
         }
 
         holder.chatContactButton.setOnClickListener {

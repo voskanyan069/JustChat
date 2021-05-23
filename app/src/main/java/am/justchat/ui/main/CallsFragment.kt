@@ -1,22 +1,20 @@
 package am.justchat.ui.main
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import am.justchat.R
-import am.justchat.activities.AuthenticationActivity
 import am.justchat.adapters.CallsAdapter
 import am.justchat.api.Config
 import am.justchat.api.repos.CallsRepo
 import am.justchat.authentication.CurrentUser
 import am.justchat.models.Call
 import am.justchat.states.CallsState
-import android.content.Intent
+import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -65,15 +63,10 @@ class CallsFragment : Fragment() {
                                 call: retrofit2.Call<JsonObject>,
                                 response: Response<JsonObject>
                         ) {
-                            val jsonParser = JsonParser()
-                            val callsJsonStr = Gson().toJson(response.body())
-                            val callsJson = jsonParser.parse(callsJsonStr).asJsonObject
                             try {
-                                val code: Int = callsJson.get("code").asInt
-                                if (code == 1) {
-                                    moveToSignUp()
-                                }
-                            } catch (e: Exception) {
+                                val jsonParser = JsonParser()
+                                val callsJsonStr = Gson().toJson(response.body())
+                                val callsJson = jsonParser.parse(callsJsonStr).asJsonObject
                                 val calls = callsJson.getAsJsonArray("calls")
                                 for (i in 0..calls.size().minus(1)) {
                                     val callJson: JsonObject = calls.get(i).asJsonObject
@@ -91,6 +84,8 @@ class CallsFragment : Fragment() {
                                     callsArrayList.add(thisCall)
                                 }
                                 fillCallsList(callsArrayList)
+                            } catch (e: Exception) {
+                                Log.e("mTag", "Fetch Error", e)
                             }
                         }
 
@@ -103,12 +98,6 @@ class CallsFragment : Fragment() {
 
     private fun fillCallsList(data: List<Call>) {
         callsList.adapter = CallsAdapter(data)
-    }
-
-    private fun moveToSignUp() {
-        val intent = Intent(context, AuthenticationActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
     }
 
     override fun onStop() {

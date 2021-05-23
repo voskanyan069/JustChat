@@ -1,21 +1,20 @@
 package am.justchat.activities
 
 import am.justchat.R
-import am.justchat.api.repos.StatusRepo
+import am.justchat.adapters.StatusUpdaterAdapter
 import am.justchat.api.repos.UsersRepo
 import am.justchat.authentication.CurrentUser
 import am.justchat.states.SwitchFragment
-import am.justchat.models.Status
 import am.justchat.storage.SharedPreference
 import am.justchat.ui.main.CallsFragment
 import am.justchat.ui.main.ChatsFragment
 import am.justchat.ui.main.ContactsFragment
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import am.justchat.ui.main.SettingsFragment
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.gson.Gson
@@ -25,12 +24,10 @@ import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavigationMenu: BottomNavigationView
     private lateinit var sharedPreference: SharedPreferences
-    private val statusRepo = StatusRepo.getInstance()
     private val usersRepo = UsersRepo.getInstance()
     private var isActivityActive = true
 
@@ -59,7 +56,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             val login = sharedPreference.getString("login", null)
             val username = sharedPreference.getString("username", null)
-            updateStatus("online")
+            StatusUpdaterAdapter.updateStatus("online")
 
             if (login != null) {
                 usersRepo.usersService!!
@@ -69,22 +66,19 @@ class MainActivity : AppCompatActivity() {
                             call: Call<JsonObject>,
                             response: Response<JsonObject>
                         ) {
-                            val jsonParser = JsonParser()
-                            val userJsonStr = Gson().toJson(response.body())
-                            val userJson: JsonObject = jsonParser.parse(userJsonStr).asJsonObject
                             try {
-                                val code: Int = userJson.get("code").asInt
-                                if (code == 1) {
-                                    moveToSignUp()
-                                }
-                            } catch (e: Exception) {
+                                val jsonParser = JsonParser()
+                                val userJsonStr = Gson().toJson(response.body())
+                                val userJson: JsonObject = jsonParser.parse(userJsonStr).asJsonObject
                                 CurrentUser.login = login
                                 CurrentUser.username = username
                                 CurrentUser.profileImage = userJson
-                                    .get("user").asJsonObject
-                                    .get("profile_image").asString
+                                        .get("user").asJsonObject
+                                        .get("profile_image").asString
                                 isActivityActive = true
                                 requestsTask()
+                            } catch (e: Exception) {
+                                Log.e("mTag", "Fetch Error", e)
                             }
                         }
 
@@ -99,7 +93,7 @@ class MainActivity : AppCompatActivity() {
     private fun requestsTask(): Job {
         return CoroutineScope(Dispatchers.Main).launch {
             while (isActivityActive) {
-                updateStatus("online")
+                StatusUpdaterAdapter.updateStatus("online")
                 delay(10000L)
             }
         }
@@ -118,24 +112,6 @@ class MainActivity : AppCompatActivity() {
                 true
             }
 
-    private fun updateStatus(status: String) {
-        statusRepo.statusService!!
-                .updateStatus(
-                        Status(
-                                login = CurrentUser.login.toString(),
-                                newStatus = status
-                        )
-                ).enqueue(object : Callback<JsonObject> {
-                    override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                        Log.d("mTag", "Status updated - $status")
-                    }
-
-                    override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                        Log.e("mTag", "Fetch error", t)
-                    }
-                })
-    }
-
     private fun moveToSignUp() {
         val intent = Intent(this, AuthenticationActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -145,18 +121,18 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         isActivityActive = false
-        updateStatus("offline")
+        StatusUpdaterAdapter.updateStatus("offline")
     }
 
     override fun onStop() {
         super.onStop()
         isActivityActive = false
-        updateStatus("offline")
+        StatusUpdaterAdapter.updateStatus("offline")
     }
 
     override fun onStart() {
         super.onStart()
         isActivityActive = true
-        updateStatus("online")
+        StatusUpdaterAdapter.updateStatus("online")
     }
 }
